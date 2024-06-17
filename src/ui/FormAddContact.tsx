@@ -12,7 +12,7 @@ function FormAddContact() {
     const uuid = crypto.randomUUID();
 
     const newContact = {
-      id: uuid,
+      uuid,
       ...data,
       avatar: `https://i.pravatar.cc/?=${uuid}`,
     };
