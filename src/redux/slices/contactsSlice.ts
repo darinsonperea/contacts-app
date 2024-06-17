@@ -12,12 +12,12 @@ export interface Contacts {
 
 type InitialData = {
   contacts: Contacts[];
-  // favorites: Contacts[];
+  isOpen: boolean;
 };
 
 const initialState: InitialData = {
   contacts: [],
-  // favorites: [],
+  isOpen: false,
 };
 
 const contactsSlice = createSlice({
@@ -26,12 +26,19 @@ const contactsSlice = createSlice({
   reducers: {
     initial(state, action) {
       state.contacts = action.payload;
-      // state.favorites = action?.payload?.filter(
-      //   (contact: Contacts) => contact.favorite === true
-      // );
+    },
+    toggleOpen(state, action: { payload?: boolean }) {
+      state.isOpen = action?.payload ?? !state.isOpen;
     },
     add(state, action) {
       state.contacts.push(action.payload);
+    },
+    edit(state, action) {
+      const contact = state.contacts.find(
+        (contact) => contact.id === action.payload.id
+      );
+
+      contact?.id;
     },
     liked(state, action) {
       const contact = state.contacts.find(
@@ -47,11 +54,14 @@ const contactsSlice = createSlice({
   },
 });
 
-export const { initial, liked, remove, add } = contactsSlice.actions;
+export const { initial, liked, remove, add, toggleOpen } =
+  contactsSlice.actions;
 
 export default contactsSlice.reducer;
 
-export const getContactsSlice = (state: RootState) => state.contacts.contacts;
+export const getContactsSlice = (state: RootState) => state?.contacts?.contacts;
 
 export const getFavoritesSlice = (state: RootState) =>
-  state.contacts.contacts.filter((contact) => contact.favorite === true);
+  state?.contacts?.contacts?.filter((contact) => contact.favorite === true);
+
+export const getOpen = (state: RootState) => state.contacts.isOpen;
