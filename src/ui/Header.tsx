@@ -1,14 +1,17 @@
 import { NavLink } from "react-router-dom";
 import Logo from "./Logo";
 import Plus from "../icons/Plus";
-import { useState } from "react";
-import FormAddContact from "./FormAddContact";
+import FormContact from "./FormContact";
+import { useDispatch } from "react-redux";
+import { getOpen, toggleOpen } from "../redux/slices/contactsSlice";
+import { useSelector } from "react-redux";
 
 function Header() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const dispatch = useDispatch();
+  const isFormOpen = useSelector(getOpen);
 
   function handleClickIsFormOpen() {
-    setIsFormOpen(!isFormOpen);
+    dispatch(toggleOpen());
   }
 
   return (
@@ -33,7 +36,7 @@ function Header() {
           </button>
         </nav>
       </header>
-      {isFormOpen && <FormAddContact />}
+      {isFormOpen && <FormContact />}
     </>
   );
 }
