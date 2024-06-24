@@ -1,17 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-
-export interface Contacts {
-  id: number | string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  avatar: string;
-  favorite: boolean;
-}
+import { ReduxContacts } from "../../utils/types";
 
 type InitialData = {
-  contacts: Contacts[];
+  contacts: ReduxContacts[];
   isOpen: boolean;
 };
 
@@ -27,8 +19,8 @@ const contactsSlice = createSlice({
     initial(state, action) {
       state.contacts = action.payload;
     },
-    toggleOpen(state, action: { payload?: boolean }) {
-      state.isOpen = action?.payload ?? !state.isOpen;
+    toggleOpen(state) {
+      state.isOpen = !state.isOpen;
     },
     add(state, action) {
       state.contacts.push(action.payload);
@@ -64,4 +56,4 @@ export const getContactsSlice = (state: RootState) => state?.contacts?.contacts;
 export const getFavoritesSlice = (state: RootState) =>
   state?.contacts?.contacts?.filter((contact) => contact.favorite === true);
 
-export const getOpen = (state: RootState) => state.contacts.isOpen;
+export const getOpen = (state: RootState) => state?.contacts?.isOpen;

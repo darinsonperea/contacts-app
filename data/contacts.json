@@ -1,0 +1,28 @@
+{
+  "contacts": [
+    {
+      "avatar": "https://reqres.in/img/faces/1-image.jpg",
+      "email": "george.bluth@globant.com",
+      "favorite": true,
+      "first_name": "George",
+      "id": "1",
+      "last_name": "Bluth"
+    },
+    {
+      "avatar": "https://reqres.in/img/faces/2-image.jpg",
+      "email": "janet.weaver@globant.com",
+      "favorite": false,
+      "first_name": "Janet",
+      "id": "2",
+      "last_name": "Weaver"
+    },
+    {
+      "id": "cebc06c9-80d3-4af3-96c0-c7f5ee7c28af",
+      "first_name": "Ana",
+      "last_name": "Perez",
+      "email": "ana@gmail.com",
+      "favorite": false,
+      "avatar": "https://i.pravatar.cc/?=cebc06c9-80d3-4af3-96c0-c7f5ee7c28af"
+    }
+  ]
+}
