@@ -1,70 +1,91 @@
 import { useForm } from "react-hook-form";
+import { useCreate } from "../services/hooks/useCreate";
+import { Contacts } from "../utils/types";
 import { useDispatch } from "react-redux";
-import { Contacts, add } from "../redux/slices/contactsSlice";
-import { fakeUsers } from "../data/fakeData";
+import { toggleOpen } from "../redux/slices/contactsSlice";
+import { getGenderByName, randomInteger } from "../utils/helper";
+import MiniSpinner from "./MiniSpinner";
 
 function FormContact() {
-  const { register, reset, handleSubmit } = useForm<Contacts>();
-  // const { errors } = formState;
   const dispatch = useDispatch();
+  const { register, reset, handleSubmit, formState } = useForm<Contacts>();
+  const { errors } = formState;
+  const { createContact, isPending } = useCreate();
 
-  function onSubmit(data: Contacts) {
-    const uuid = crypto.randomUUID();
+  async function onSubmit(data: Contacts) {
+    const gender = await getGenderByName(data.name);
+    const randomNumberPhoto = randomInteger(0, 78);
 
     const newContact = {
-      uuid,
       ...data,
-      avatar: `https://i.pravatar.cc/?=${uuid}`,
+      avatar: `https://xsgames.co/randomusers/assets/avatars/${gender}/${randomNumberPhoto}.jpg`,
     };
 
-    dispatch(add(newContact));
-    reset();
+    // dispatch(add(newContact));
+
+    console.log(data);
+
+    createContact(newContact, {
+      onSuccess: () => {
+        dispatch(toggleOpen());
+        reset();
+      },
+    });
   }
 
   return (
-    <div className="sm:flex justify-center">
+    <div className="sm:flex justify-center dark:bg-black">
       <form
         className="flex flex-col py-10 sm:px-20 items-center gap-3 bg-green-light w-full sm:w-auto"
         onSubmit={handleSubmit(onSubmit)}
       >
         <input
           type="text"
-          placeholder="First name"
+          placeholder="Name"
           className="bg-green-form w-72 p-3 outline-none border-b border-white placeholder:text-custom-black placeholder:opacity-70 rounded-t-md placeholder:font-medium"
           autoFocus
-          {...register("first_name", { required: "This field is required" })}
+          {...register("name", { required: "You must put your name here" })}
+          disabled={isPending}
+          autoComplete="off"
         />
+        <span className="text-red-500 text-xs bottom-0">
+          {errors.name?.message}
+        </span>
         <input
           type="text"
           placeholder="Last name"
           className="bg-green-form w-72 p-3 outline-none border-b border-white placeholder:text-custom-black placeholder:opacity-70 rounded-t-md placeholder:font-medium"
-          {...register("last_name", { required: "This field is required" })}
+          {...register("lastName", { required: "This field is required" })}
+          disabled={isPending}
+          autoComplete="off"
         />
         <input
           type="email"
           placeholder="Email"
           className=" bg-green-form w-72 p-3 outline-none border-b border-white placeholder:text-custom-black placeholder:opacity-70 rounded-t-md placeholder:font-medium"
           {...register("email", { required: "This field is required" })}
+          disabled={isPending}
+          autoComplete="off"
         />
 
         <div className="w-[285px] flex items-center justify-between my-5 text-sm">
-          <label htmlFor="email" className="font-medium">
+          <label htmlFor="favorite" className="font-medium">
             Enable like favorite
           </label>
           <input
             type="checkbox"
             className="accent-green-dark h-4 w-4"
             {...register("favorite")}
+            disabled={isPending}
+            id="favorite"
           />
         </div>
-        <button className="border-none bg-white px-3 py-1 rounded-md capitalize font-semibold text-xs tracking-widest shadow-button shadow-black-light">
-          SAVE
-        </button>
         <button
-          className="border-none bg-white px-3 py-1 rounded-md capitalize font-semibold text-xs tracking-widest shadow-button shadow-black-light"
-          onClick={() => fakeUsers.map((user) => onSubmit(user))}
+          className=" flex gap-2 border-none bg-white px-3 py-1 rounded-md capitalize font-semibold text-xs tracking-widest shadow-button shadow-black-light"
+          disabled={isPending}
         >
-          Fake data
+          {isPending ? "Saving..." : "SAVE"}
+          {isPending && <MiniSpinner />}
         </button>
       </form>
     </div>
