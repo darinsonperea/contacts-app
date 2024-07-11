@@ -1,6 +1,36 @@
+import styled from "styled-components";
 import { Contacts } from "../utils/types";
 import ContainerButtons from "./ContainerButtons";
 import Image from "./Image";
+import { colors } from "../utils/helper";
+
+const Container = styled.div`
+  width: 16rem;
+  height: 14rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  border-radius: 6px;
+  color: var(--text--color);
+  box-shadow: var(--card--shadow);
+  background-color: var(--bg--card);
+`;
+
+const ContainerImage = styled.div`
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
+  margin-bottom: 4px;
+`;
+
+const Separator = styled.div`
+  width: 13rem;
+  margin: 1rem 0;
+  border: 1px solid var(--separator--line);
+`;
 
 function Card({
   contact,
@@ -12,21 +42,40 @@ function Card({
   const { name, lastName, email, avatar, favorite } = contact;
 
   return (
-    <div className="w-64 h-56 flex flex-col items-center py-4 shadow-card rounded-md dark:bg-mode-black dark:shadow-mode-black">
-      <div className="w-full h-[100px] flex justify-center py-1 mb-1 *:transition-colors *:duration-100">
+    <Container>
+      <ContainerImage>
         <Image
           src={avatar}
           alt={`Foto of ${name} ${lastName}`}
-          customizeClass={`rounded-full ${favorite && "border-4 border-green-light"}`}
+          favorite={favorite}
+          customizeClass={{
+            width: "90px",
+            height: "90px",
+            objectFit: "cover",
+            borderRadius: "50px",
+          }}
         />
-      </div>
-      <p className="font-medium dark:text-white">
+      </ContainerImage>
+      <p
+        style={{
+          fontWeight: "500",
+        }}
+      >
         {name} {lastName}
       </p>
-      <p className="text-xs text-gray-500 dark:text-gray-300">{email}</p>
-      <div className="w-52 my-4 border border-gray-200 dark:border-gray-500"></div>
+      <p
+        // colors: text-gray-400 dark:text-gray-300
+        style={{
+          fontSize: "12px",
+          lineHeight: "1rem",
+          color: colors["gray-400"],
+        }}
+      >
+        {email}
+      </p>
+      <Separator />
       <ContainerButtons>{children}</ContainerButtons>
-    </div>
+    </Container>
   );
 }
 

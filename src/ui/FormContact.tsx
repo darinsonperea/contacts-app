@@ -1,94 +1,166 @@
-import { useForm } from "react-hook-form";
-import { useCreate } from "../services/hooks/useCreate";
-import { Contacts } from "../utils/types";
-import { useDispatch } from "react-redux";
-import { toggleOpen } from "../redux/slices/contactsSlice";
 import { getGenderByName, randomInteger } from "../utils/helper";
-import MiniSpinner from "./MiniSpinner";
+import { useAuth } from "../context/AuthContext";
+import styled from "styled-components";
+import { useState } from "react";
+import { ContactWithoutId } from "../utils/types";
+
+const FormContainer = styled.div`
+  background-color: var(--app--background);
+
+  @media (min-width: 640px) {
+    display: flex;
+    justify-content: center;
+  }
+`;
+
+const StyledForm = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--green--light);
+  padding: 2.5rem 0;
+
+  @media (min-width: 640px) {
+    width: auto;
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+`;
+
+const StyledInput = styled.input`
+  width: 18rem;
+  padding: 12px;
+  background-color: var(--green--form);
+  outline: none;
+  border-bottom: 1px solid var(--white);
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+
+  &::placeholder {
+    color: var(--black);
+    opacity: 0.7;
+    font-weight: 500;
+  }
+`;
+
+const FormButton = styled.button`
+  display: flex;
+  gap: 8px;
+  border: none;
+  background-color: var(--white);
+  padding: 4px 12px;
+  /* text-transform: capitalize; */
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1rem;
+  letter-spacing: 0.1em;
+  border-radius: 6px;
+  box-shadow: var(--button--shadow);
+`;
+
+const ContainerCheckbox = styled.div`
+  width: 285px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+  font-size: 14px;
+  line-height: 20px;
+
+  & label {
+    font-weight: 500;
+  }
+
+  & input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--green--dark);
+  }
+`;
 
 function FormContact() {
-  const dispatch = useDispatch();
-  const { register, reset, handleSubmit, formState } = useForm<Contacts>();
-  const { errors } = formState;
-  const { createContact, isPending } = useCreate();
+  const [name, setName] = useState("Darinson");
+  const [lastName, setLastName] = useState("Perea");
+  const [email, setEmail] = useState("darin@gmail.com");
+  const [favorite, setFavorite] = useState(false);
+  const [avatar, setAvatar] = useState<FileList | null>(null);
+  const [error, setError] = useState("");
+  const { manageCreateContact, isAuthenticated } = useAuth();
 
-  async function onSubmit(data: Contacts) {
-    const gender = await getGenderByName(data.name);
+  async function handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!name || !lastName || !email)
+      return setError("A field can't be empty*");
+
+    const gender = await getGenderByName(name);
     const randomNumberPhoto = randomInteger(0, 78);
+    const image = `https://xsgames.co/randomusers/assets/avatars/${gender}/${randomNumberPhoto}.jpg`;
 
-    const newContact = {
-      ...data,
-      avatar: `https://xsgames.co/randomusers/assets/avatars/${gender}/${randomNumberPhoto}.jpg`,
+    const newContact: ContactWithoutId = {
+      name,
+      lastName,
+      email,
+      favorite,
+      avatar: isAuthenticated ? avatar?.[0] : image,
     };
 
-    // dispatch(add(newContact));
-
-    console.log(data);
-
-    createContact(newContact, {
-      onSuccess: () => {
-        dispatch(toggleOpen());
-        reset();
-      },
-    });
+    manageCreateContact(newContact);
   }
 
   return (
-    <div className="sm:flex justify-center dark:bg-black">
-      <form
-        className="flex flex-col py-10 sm:px-20 items-center gap-3 bg-green-light w-full sm:w-auto"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <input
+    <FormContainer>
+      <StyledForm onSubmit={handleSubmit}>
+        <span className="text-red-500 text-sm">{error}</span>
+        <StyledInput
           type="text"
           placeholder="Name"
-          className="bg-green-form w-72 p-3 outline-none border-b border-white placeholder:text-custom-black placeholder:opacity-70 rounded-t-md placeholder:font-medium"
           autoFocus
-          {...register("name", { required: "You must put your name here" })}
-          disabled={isPending}
+          value={name}
           autoComplete="off"
-        />
-        <span className="text-red-500 text-xs bottom-0">
-          {errors.name?.message}
-        </span>
-        <input
-          type="text"
-          placeholder="Last name"
-          className="bg-green-form w-72 p-3 outline-none border-b border-white placeholder:text-custom-black placeholder:opacity-70 rounded-t-md placeholder:font-medium"
-          {...register("lastName", { required: "This field is required" })}
-          disabled={isPending}
-          autoComplete="off"
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className=" bg-green-form w-72 p-3 outline-none border-b border-white placeholder:text-custom-black placeholder:opacity-70 rounded-t-md placeholder:font-medium"
-          {...register("email", { required: "This field is required" })}
-          disabled={isPending}
-          autoComplete="off"
+          onChange={(event) => setName(event.target.value)}
+          // disabled={isPending}
         />
 
-        <div className="w-[285px] flex items-center justify-between my-5 text-sm">
-          <label htmlFor="favorite" className="font-medium">
-            Enable like favorite
-          </label>
+        <StyledInput
+          type="text"
+          placeholder="Last name"
+          value={lastName}
+          autoComplete="off"
+          onChange={(event) => setLastName(event.target.value)}
+          // disabled={isPending}
+        />
+
+        <StyledInput
+          type="email"
+          placeholder="Email"
+          value={email}
+          autoComplete="off"
+          onChange={(event) => setEmail(event.target.value)}
+          // disabled={isPending}
+        />
+
+        {isAuthenticated && (
+          <input
+            type="file"
+            onChange={(event) => setAvatar(event.target.files)}
+          />
+        )}
+
+        <ContainerCheckbox>
+          <label htmlFor="favorite">Enable like favorite</label>
           <input
             type="checkbox"
-            className="accent-green-dark h-4 w-4"
-            {...register("favorite")}
-            disabled={isPending}
             id="favorite"
+            onChange={(event) => setFavorite(event.target.checked)}
           />
-        </div>
-        <button
-          className=" flex gap-2 border-none bg-white px-3 py-1 rounded-md capitalize font-semibold text-xs tracking-widest shadow-button shadow-black-light"
-          disabled={isPending}
-        >
-          {isPending ? "Saving..." : "SAVE"}
-          {isPending && <MiniSpinner />}
-        </button>
-      </form>
-    </div>
+        </ContainerCheckbox>
+
+        <FormButton>SAVE</FormButton>
+      </StyledForm>
+    </FormContainer>
   );
 }
 

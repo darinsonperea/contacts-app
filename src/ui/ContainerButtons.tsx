@@ -1,5 +1,12 @@
+import styled from "styled-components";
+
+const StyledDiv = styled.div`
+  display: flex;
+  gap: 35px;
+`;
+
 function ContainerButtons({ children }: { children: React.ReactNode }) {
-  return <div className="space-x-8">{children}</div>;
+  return <StyledDiv>{children}</StyledDiv>;
 }
 
 export default ContainerButtons;

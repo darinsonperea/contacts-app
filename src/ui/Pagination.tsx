@@ -2,6 +2,22 @@ import { useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "../utils/helper";
 import ArrowLeft from "../icons/ArrowLeft";
 import ArrowRight from "../icons/ArrowRight";
+import styled from "styled-components";
+
+const StyledSection = styled.section`
+  width: 80vw;
+  height: 40px;
+  margin: 1rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  & div {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+`;
 
 function Pagination({ count }: { count?: number }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,11 +42,12 @@ function Pagination({ count }: { count?: number }) {
     setSearchParams(searchParams);
   }
 
+  if (currentPage > pageCount) previousPage();
   if (pageCount <= 1) return;
 
   return (
-    <section className="dark:*:text-white *:text-black w-custom-screen mx-auto h-10 flex items-center justify-end mt-4">
-      <div className="flex items-center gap-10">
+    <StyledSection>
+      <div>
         <p>
           {currentPage} de {pageCount}
         </p>
@@ -43,7 +60,7 @@ function Pagination({ count }: { count?: number }) {
           </button>
         </div>
       </div>
-    </section>
+    </StyledSection>
   );
 }
 

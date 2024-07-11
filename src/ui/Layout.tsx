@@ -1,20 +1,18 @@
-// import { useDispatch } from "react-redux";
-// import { useContactsClient } from "../services/hooks/useContactsClient";
-// import { initial } from "../redux/slices/contactsSlice";
+import styled from "styled-components";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 
-function Layout() {
-  // const { data } = useContactsClient();
-  // const dispatch = useDispatch();
-  // dispatch(initial(data));
+const StyledMain = styled.main`
+  min-height: 94.1vh;
+  padding: 1rem;
+  background-color: var(--app--background);
+`;
 
+function Layout() {
   return (
     <>
       <Header />
-      <main className="dark:bg-black min-h-custom-height p-4 transition-colors duration-100">
-        {<Outlet />}
-      </main>
+      <StyledMain>{<Outlet />}</StyledMain>
     </>
   );
 }
