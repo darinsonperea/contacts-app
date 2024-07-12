@@ -1,14 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { ReduxContacts } from "../../utils/types";
+import { InitialData } from "../../utils/types";
+import { defaultContacts } from "../../utils/helper";
 
-type InitialData = {
-  contacts: ReduxContacts[];
-  isOpen: boolean;
-};
+const defaultContactsRedux = await defaultContacts();
 
 const initialState: InitialData = {
-  contacts: [],
+  contacts: [...defaultContactsRedux],
   isOpen: false,
 };
 

@@ -1,18 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
-import { getContacts } from "../apiContacts";
-import { useSearchParams } from "react-router-dom";
+import useQuery from "../../hooks/useQuery";
+import { Contacts } from "../../utils/types";
+import { headersSupabase } from "../supabase";
 
 export function useContacts() {
-  const [searchParams] = useSearchParams();
-  // pagination
-  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
-
-  const { data: { data, count } = {}, error } = useQuery({
-    queryKey: ["contacts", page],
-    queryFn: () => getContacts(page),
+  const { data, isLoading, error, refetch } = useQuery<Contacts[]>({
+    url: "https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?select=*",
+    headers: headersSupabase,
   });
+
+  console.log("Old data", data);
+  // console.log("New data", newData);
 
   const favorites = data?.filter((contact) => contact.favorite === true);
 
-  return { data, favorites, error, count };
+  return { error, isLoading, favorites, data, refetch };
 }

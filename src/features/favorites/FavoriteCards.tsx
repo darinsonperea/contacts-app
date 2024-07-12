@@ -1,28 +1,43 @@
 import Card from "../../ui/Card";
 import HeartBroken from "../../icons/HeartBroken";
-import { useToggleLike } from "../../services/hooks/useToggleLike";
 import { CardsProps } from "../../utils/types";
-import Pagination from "../../ui/Pagination";
+import { useAuth } from "../../context/AuthContext";
+import styled from "styled-components";
+import { colors } from "../../utils/helper";
 
-function FavoriteCards({ contacts: favorites, count }: CardsProps) {
-  const { toggleLike, isPending } = useToggleLike();
+export const StyledSection = styled.section`
+  display: grid;
+  grid-template-columns: repeat(Auto-fill, 256px);
+  justify-content: center;
+  width: 80vw;
+  margin: 0 auto;
+  gap: 16px;
+
+  @media (min-width: 768px) {
+    gap: 56px 40px;
+  }
+`;
+
+function FavoriteCards({ contacts: favorites }: CardsProps) {
+  const { manageToggleLike } = useAuth();
 
   return (
     <>
-      <section className="w-[80vw] mx-auto gap-4 md:gap-x-10 md:gap-y-14 grid grid-cols-dynamic justify-center">
+      <StyledSection>
         {favorites?.map((contact) => (
           <Card contact={contact} key={contact.id}>
             <button
-              className="text-red-700"
-              onClick={() => toggleLike({ id: contact.id, favorite: false })}
-              disabled={isPending}
+              style={{
+                color: colors["red-700"],
+              }}
+              onClick={() => manageToggleLike(contact.id, false)}
+              // disabled={isPending}
             >
               <HeartBroken />
             </button>
           </Card>
         ))}
-      </section>
-      <Pagination count={count} />
+      </StyledSection>
     </>
   );
 }

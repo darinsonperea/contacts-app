@@ -1,27 +1,35 @@
-import { PAGE_SIZE } from "../utils/helper";
-import { Contacts, EditContactType } from "../utils/types";
-import { supabase } from "./supabase";
+import { ContactWithoutId, EditContactType } from "../utils/types";
+import { supabase, supabaseUrl } from "./supabase";
 
-export async function getContacts(page?: number) {
-  let query = supabase.from("contacts").select("*", { count: "exact" });
+const storagePath = "storage/v1/object/public/avatars";
+const savedPath = `${supabaseUrl}/${storagePath}`;
 
-  if (page) {
-    const from = (page - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
-    query = query.range(from, to);
-  }
+export async function getContacts() {
+  const { data, error } = await supabase.from("contacts").select("*");
+  // .eq("userId", "");
 
-  const { data, count, error } = await query;
+  // if (page) {
+  //   const from = (page - 1) * PAGE_SIZE;
+  //   const to = from + PAGE_SIZE - 1;
+  //   query = query.range(from, to);
+  // }
 
   if (error) throw new Error(error.message);
 
-  return { data, count };
+  return { data };
 }
 
-export async function createContact(newContact: Contacts) {
+export async function createContact(newContact: ContactWithoutId) {
+  const imageName = `${Math.random()}-${newContact?.avatar?.name}`.replace(
+    "/",
+    ""
+  );
+  const imagePath = `${savedPath}/${imageName}`;
+  uploadImageToStorage(newContact?.avatar, imageName);
+
   const { data, error } = await supabase
     .from("contacts")
-    .insert([newContact])
+    .insert([{ ...newContact, avatar: imagePath }])
     .select();
 
   if (error) throw new Error(error.message);
@@ -59,8 +67,31 @@ export async function toggleLike({
   return data;
 }
 
-export async function deleteContact(id: number) {
+export async function deleteContact({
+  id,
+  imagePath,
+}: {
+  id: number;
+  imagePath: string;
+}) {
   const { error } = await supabase.from("contacts").delete().eq("id", id);
 
   if (error) throw new Error(error.message);
+
+  const imageName = imagePath.substring(savedPath.length + 1);
+  deleteImageFromStorage(imageName);
+}
+
+// Bucket actions
+
+async function uploadImageToStorage(image: File, imageName: string) {
+  const { error } = await supabase.storage
+    .from("avatars")
+    .upload(imageName, image);
+
+  if (error) throw new Error(error.message);
+}
+
+async function deleteImageFromStorage(imageName: string) {
+  await supabase.storage.from("avatars").remove([imageName]);
 }

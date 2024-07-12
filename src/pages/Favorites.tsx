@@ -1,15 +1,15 @@
+import { useAuth } from "../context/AuthContext";
 import FavoriteCards from "../features/favorites/FavoriteCards";
-import { useContacts } from "../services/hooks/useContacts";
 import TitlePage from "../ui/TitlePage";
 
 function Favorites() {
-  const { favorites } = useContacts();
-  const count = favorites?.length;
+  const { manageGetFavorites } = useAuth();
+  const favorites = manageGetFavorites();
 
   return (
     <>
       <TitlePage title="Favorites" />
-      <FavoriteCards contacts={favorites} count={count} />
+      <FavoriteCards contacts={favorites} />
     </>
   );
 }

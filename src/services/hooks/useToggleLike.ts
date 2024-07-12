@@ -1,22 +1,28 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toggleLike as toggleLikeApi } from "../apiContacts";
+import { useState } from "react";
+import useFetch from "../../hooks/useQuery";
+import { headersSupabase } from "../supabase";
+
+interface UseToggleTypes {
+  id: number;
+  favorite: boolean;
+}
 
 export function useToggleLike() {
-  const queryClient = useQueryClient();
-
-  const {
-    mutate: toggleLike,
-    isPending,
-    error,
-  } = useMutation({
-    mutationFn: ({ id, favorite }: { id: number; favorite: boolean }) =>
-      toggleLikeApi({ id, favorite }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["contacts"],
-      });
-    },
+  const [toggle, setToggle] = useState<UseToggleTypes>({
+    id: 0,
+    favorite: false,
   });
 
-  return { toggleLike, isPending, error };
+  const favorite = {
+    favorite: toggle.favorite,
+  };
+
+  const { error, isLoading: isToggling } = useFetch({
+    url: `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?id=eq.${toggle.id}`,
+    method: "PATCH",
+    headers: headersSupabase,
+    body: favorite,
+  });
+
+  return { setToggle, isToggling, error };
 }
