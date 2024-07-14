@@ -1,4 +1,4 @@
-type Methods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+type Methods = "POST" | "PUT" | "PATCH" | "DELETE";
 export type ContactWithoutId = Omit<Contacts, "id">;
 
 export interface Contacts {
@@ -6,7 +6,7 @@ export interface Contacts {
   name: string;
   lastName: string;
   email: string;
-  avatar: string | File | null | undefined;
+  avatar: string | File;
   favorite: boolean;
 }
 
@@ -48,19 +48,6 @@ export interface AuthContextType {
   isAuthenticated: boolean;
 }
 
-export interface OptimisticContextType {
-  isCreating: boolean;
-  isDeleting: boolean;
-  contacts: Contacts[] | undefined;
-  count: number | null | undefined;
-  createOptimistic: (newContact: Contacts) => void;
-  eliminateOptimistic: (userToEliminate: {
-    id: number;
-    imagePath: HTMLInputElement.file;
-  }) => void;
-  toggleLikeOptimistic: (favorite: { id: number; favorite: boolean }) => void;
-}
-
 export interface LoginTypes {
   email: string;
   password: string;
@@ -69,10 +56,12 @@ export interface LoginTypes {
 
 export interface FetchTypes {
   url: string;
-  method?: Methods;
+  method: Methods;
   body?: object;
   headers?: HeadersInit;
-  dataType?: Contacts[];
-  flag?: boolean;
   actionFn?: () => void;
+  onSuccess?: () => void;
+  onError?: () => void;
 }
+
+export type QueryTypes = Pick<FetchTypes, "url" | "headers">;
