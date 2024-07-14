@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext } from "react";
 import { useDispatch } from "react-redux";
 import {
   add,
@@ -10,10 +10,10 @@ import {
 import { AuthContextType, ContactWithoutId } from "../utils/types";
 import { useSelector } from "react-redux";
 import useUser from "../features/authentication/hooks/useUser";
-import { useContacts } from "../services/hooks/useContacts";
 import { useCreate } from "../services/hooks/useCreate";
 import { useDelete } from "../services/hooks/useDelete";
 import { useToggleLike } from "../services/hooks/useToggleLike";
+import { useContacts } from "../services/hooks/useContacts";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -24,16 +24,12 @@ export default function AuthProvider({
 }) {
   const dispatch = useDispatch();
   const { isAuthenticated } = useUser();
-  const { favorites: favoritesApi, data, refetch } = useContacts();
+  const { favorites: favoritesApi, data } = useContacts();
   const { setContact } = useCreate();
   const { setDeleteFetch } = useDelete();
   const { setToggle } = useToggleLike();
   const dataRedux = useSelector(getContactsSlice);
   const favoritesRedux = useSelector(getFavoritesSlice);
-
-  refetch();
-
-  console.log("Auth", data);
 
   function manageGetContacts() {
     const contacts = isAuthenticated ? data : dataRedux;
@@ -56,13 +52,12 @@ export default function AuthProvider({
 
   function manageDeleteContact(id: number, imagePath?: string) {
     isAuthenticated
-      ? imagePath && setDeleteFetch({ id, flag: true })
+      ? imagePath && setDeleteFetch({ id, imagePath })
       : dispatch(remove(id));
   }
 
   function manageToggleLike(id: number, favorite: boolean) {
-    // setToggle({ id, favorite, flag: true })
-    isAuthenticated ? "" : dispatch(liked(id));
+    isAuthenticated ? setToggle({ id, favorite }) : dispatch(liked(id));
   }
 
   return (

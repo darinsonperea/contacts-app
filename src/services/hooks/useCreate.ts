@@ -1,43 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ContactWithoutId } from "../../utils/types";
-import useFetch from "../../hooks/useQuery";
-import { headersSupabase } from "../supabase";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { headersSupabase, supabaseUrl } from "../supabase";
+import useFetch from "../../hooks/useFetch";
+import { uploadImageToStorage } from "../apiContacts";
 import toast from "react-hot-toast";
-import { createContact } from "../apiContacts";
+import { useContacts } from "./useContacts";
 
-interface FlagTypes {
-  flag: boolean;
-}
+const storagePath = "storage/v1/object/public/avatars";
+const savedPath = `${supabaseUrl}/${storagePath}`;
 
 export function useCreate() {
-  // const [contact, setContact] = useState<ContactWithoutId & FlagTypes>();
+  const [contact, setContact] = useState<ContactWithoutId>();
+  const { refetch: test } = useContacts();
 
-  // const { error, isLoading: isCreating } = useFetch({
-  //   url: "https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts",
-  //   method: "POST",
-  //   headers: headersSupabase,
-  //   body: contact,
-  //   // flag: true,
-  // });
-
-  const queryClient = useQueryClient();
+  const imageName = `${Math.random()}-${contact?.avatar?.name}`.replace(
+    "/",
+    ""
+  );
+  const imagePath = `${savedPath}/${imageName}`;
 
   const {
-    mutate: setContact,
-    isPending: isCreating,
     error,
-  } = useMutation({
-    mutationFn: createContact,
-    onSuccess: () => {
-      toast.success("Contact created successfully", { icon: "🙃" });
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+    isLoading: isCreating,
+    mutate: createFn,
+  } = useFetch({
+    url: "https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts",
+    method: "POST",
+    headers: headersSupabase,
+    body: { ...contact, avatar: imagePath },
+    actionFn: () => {
+      if (contact?.avatar)
+        uploadImageToStorage(contact.avatar as File, imageName);
     },
-    onError: (error) => {
-      toast.error("Something went wrong please try later");
-      console.log(error);
+    onSuccess: () => {
+      toast.success("Contact created successfully");
+      test();
     },
   });
+
+  useEffect(() => {
+    if (contact) createFn();
+  }, [contact]);
 
   return { setContact, isCreating, error };
 }

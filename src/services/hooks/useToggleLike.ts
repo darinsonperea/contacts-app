@@ -1,5 +1,5 @@
-import { useState } from "react";
-import useFetch from "../../hooks/useQuery";
+import { useEffect, useState } from "react";
+import useFetch from "../../hooks/useFetch";
 import { headersSupabase } from "../supabase";
 
 interface UseToggleTypes {
@@ -8,21 +8,26 @@ interface UseToggleTypes {
 }
 
 export function useToggleLike() {
-  const [toggle, setToggle] = useState<UseToggleTypes>({
-    id: 0,
-    favorite: false,
-  });
+  const [toggle, setToggle] = useState<UseToggleTypes | null>(null);
 
-  const favorite = {
-    favorite: toggle.favorite,
+  const body = {
+    favorite: toggle?.favorite,
   };
 
-  const { error, isLoading: isToggling } = useFetch({
-    url: `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?id=eq.${toggle.id}`,
+  const {
+    mutate: toggleFn,
+    error,
+    isLoading: isToggling,
+  } = useFetch({
+    url: `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?id=eq.${toggle?.id}`,
     method: "PATCH",
     headers: headersSupabase,
-    body: favorite,
+    body: body,
   });
+
+  useEffect(() => {
+    if (toggle !== null) toggleFn();
+  }, [toggle]);
 
   return { setToggle, isToggling, error };
 }
