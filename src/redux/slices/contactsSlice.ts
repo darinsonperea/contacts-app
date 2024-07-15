@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { InitialData } from "../../utils/types";
 import { defaultContacts } from "../../utils/helper";
@@ -51,7 +51,9 @@ export default contactsSlice.reducer;
 
 export const getContactsSlice = (state: RootState) => state?.contacts?.contacts;
 
-export const getFavoritesSlice = (state: RootState) =>
-  state?.contacts?.contacts?.filter((contact) => contact.favorite === true);
+const selectContacts = (state: RootState) => state?.contacts?.contacts;
+export const getFavoritesSlice = createSelector([selectContacts], (contacts) =>
+  contacts.filter((contact) => contact.favorite)
+);
 
 export const getOpen = (state: RootState) => state?.contacts?.isOpen;
