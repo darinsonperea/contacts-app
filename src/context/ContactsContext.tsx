@@ -1,13 +1,13 @@
 import { createContext, ReactNode, useMemo } from "react";
 import useQuery from "../hooks/useQuery";
 import { headersSupabase } from "../services/supabase";
-import { Contacts } from "../utils/types";
+import { ContactDataType } from "../utils/types";
 
 interface ContactsContextType {
-  data: Contacts[] | null;
+  data: ContactDataType[] | null;
   isLoading: boolean;
   error: string;
-  favorites: Contacts[] | undefined;
+  favorites: ContactDataType[] | undefined;
   refetch: () => void;
 }
 
@@ -20,7 +20,7 @@ export default function ContactsProvider({
 }: {
   children: ReactNode;
 }) {
-  const { data, isLoading, error, refetch } = useQuery<Contacts[]>({
+  const { data, isLoading, error, refetch } = useQuery<ContactDataType[]>({
     url: "https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?select=*",
     headers: headersSupabase,
   });
