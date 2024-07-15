@@ -14,13 +14,11 @@ function useFetch({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { refetch } = useContacts();
-  const { refetch: test } = useContacts();
 
   async function mutate() {
     try {
-      // Por si necesitas hacer algo antes de que se haga el fetching
+      // Por si necesitas hacer algo antes de que se haga antes de el fetching
       await actionFn?.();
-
       setError("");
       setIsLoading(true);
       const response = await fetch(url, {
@@ -31,6 +29,9 @@ function useFetch({
 
       if (response.ok) onSuccess?.();
       if (response.status !== 200) return;
+
+      const data = await response.json();
+      return data;
     } catch (error) {
       onError?.();
       console.log(error);
@@ -38,7 +39,6 @@ function useFetch({
     } finally {
       setIsLoading(false);
       refetch();
-      test();
     }
   }
 

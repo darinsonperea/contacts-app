@@ -5,7 +5,7 @@ import StyledInput from "./Input";
 import StyledButton from "./Button";
 
 function Login() {
-  const { login } = useLogin();
+  const { setUser } = useLogin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,7 +14,7 @@ function Login() {
 
     if (!email || !password) return;
 
-    login({ email, password });
+    setUser({ email, password });
   }
 
   return (

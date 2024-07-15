@@ -13,6 +13,8 @@ export function useCreate() {
   const [contact, setContact] = useState<ContactWithoutId>();
   const { refetch: test } = useContacts();
 
+  console.log(contact);
+
   const imageName = `${Math.random()}-${contact?.avatar?.name}`.replace(
     "/",
     ""
