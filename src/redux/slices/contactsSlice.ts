@@ -1,9 +1,15 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { InitialData } from "../../utils/types";
+import { ContactDataType, InitialData } from "../../utils/types";
 import { defaultContacts } from "../../utils/helper";
 
-const defaultContactsRedux = await defaultContacts();
+const defaultContactsRedux: ContactDataType[] = [];
+
+async function getDefaultContacts() {
+  defaultContactsRedux.push(...(await defaultContacts()));
+}
+
+await getDefaultContacts();
 
 const initialState: InitialData = {
   contacts: [...defaultContactsRedux],
