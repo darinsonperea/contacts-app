@@ -1,21 +1,22 @@
 type Methods = "POST" | "PUT" | "PATCH" | "DELETE";
+type Avatar = CustomFile | unknown;
 export type ContactWithoutId = Omit<ContactDataType, "id">;
 
-type CustomFile = {
+interface CustomFile {
   name: string;
   size: number;
   lastModified: number;
   type: string;
   webkitRelativePath: string;
   lastModifiedDate: object;
-};
+}
 
 export interface ContactDataType {
   id: number;
   name: string;
   lastName: string;
   email: string;
-  avatar: unknown | FileList;
+  avatar: File | string;
   favorite: boolean;
 }
 

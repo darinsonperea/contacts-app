@@ -85,7 +85,7 @@ function FormContact() {
   const [lastName, setLastName] = useState("Perea");
   const [email, setEmail] = useState("darin@gmail.com");
   const [favorite, setFavorite] = useState(false);
-  const [avatar, setAvatar] = useState<FileList | null>(null);
+  const [avatar, setAvatar] = useState<File | undefined>(undefined);
   const [error, setError] = useState("");
   const { manageCreateContact, isAuthenticated } = useAuth();
 
@@ -104,7 +104,7 @@ function FormContact() {
       lastName,
       email,
       favorite,
-      avatar: isAuthenticated ? avatar?.[0] : image,
+      avatar: isAuthenticated && avatar ? avatar : image,
     };
 
     manageCreateContact(newContact);
@@ -145,7 +145,7 @@ function FormContact() {
         {isAuthenticated && (
           <input
             type="file"
-            onChange={(event) => setAvatar(event.target.files)}
+            onChange={(event) => setAvatar(event.target.files?.[0])}
           />
         )}
 

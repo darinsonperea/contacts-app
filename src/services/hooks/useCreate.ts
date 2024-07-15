@@ -8,17 +8,15 @@ import { useContacts } from "./useContacts";
 
 const storagePath = "storage/v1/object/public/avatars";
 const savedPath = `${supabaseUrl}/${storagePath}`;
+let imageName: string;
 
 export function useCreate() {
   const [contact, setContact] = useState<ContactWithoutId>();
   const { refetch: test } = useContacts();
 
-  console.log(contact);
-
-  const imageName = `${Math.random()}-${contact?.avatar?.name}`.replace(
-    "/",
-    ""
-  );
+  if (contact?.avatar instanceof File) {
+    imageName = `${Math.random()}-${contact?.avatar?.name}`.replace("/", "");
+  }
   const imagePath = `${savedPath}/${imageName}`;
 
   const {
@@ -31,8 +29,8 @@ export function useCreate() {
     headers: headersSupabase,
     body: { ...contact, avatar: imagePath },
     actionFn: () => {
-      if (contact?.avatar)
-        uploadImageToStorage(contact.avatar as File, imageName);
+      if (contact?.avatar instanceof File)
+        uploadImageToStorage(contact.avatar, imageName);
     },
     onSuccess: () => {
       toast.success("Contact created successfully");
