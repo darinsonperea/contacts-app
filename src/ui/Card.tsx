@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Contacts } from "../utils/types";
+import { ContactsTypes } from "../utils/types";
 import ContainerButtons from "./ContainerButtons";
 import Image from "./Image";
 import { colors } from "../utils/helper";
@@ -36,7 +36,7 @@ function Card({
   contact,
   children,
 }: {
-  contact: Contacts;
+  contact: ContactsTypes;
   children?: React.ReactNode;
 }) {
   const { name, lastName, email, avatar, favorite } = contact;
@@ -51,8 +51,8 @@ function Card({
           customizeClass={{
             width: "90px",
             height: "90px",
-            objectFit: "cover",
-            borderRadius: "50px",
+            objectfit: "cover",
+            borderradius: "50px",
           }}
         />
       </ContainerImage>
