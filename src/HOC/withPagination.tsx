@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { ElementType, useEffect, useState } from "react";
 import Pagination from "../ui/Pagination";
 import { PAGE_SIZE } from "../utils/helper";
 import { ContactDataType } from "../utils/types";
 
-export function withPagination(WrappedComponent: any) {
+export function withPagination(WrappedComponent: ElementType) {
   return function CardsWithPagination({
     data,
     page,
