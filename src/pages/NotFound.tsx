@@ -1,5 +1,5 @@
 function NotFound() {
-  return <div></div>;
+  return <div>Sorry this page doesn't exist you can Go Back</div>;
 }
 
 export default NotFound;

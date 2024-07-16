@@ -1,24 +1,32 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteContact as deleteContactApi } from "../apiContacts";
-import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import useFetch from "../../hooks/useFetch";
+import { headersSupabase } from "../supabase";
+import { deleteImageFromStorage } from "../apiContacts";
+
+interface useDeleteTypes {
+  id: number;
+  imagePath: string;
+}
 
 export function useDelete() {
-  const queryClient = useQueryClient();
+  const [deleteFetch, setDeleteFetch] = useState<useDeleteTypes | null>(null);
 
   const {
-    mutate: deleteContact,
-    isPending,
+    isLoading: isDeleting,
     error,
-  } = useMutation({
-    mutationFn: deleteContactApi,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
-      toast.success("Contact deleted successfully", {
-        icon: "☹️​",
-      });
+    mutate: deleteFn,
+  } = useFetch({
+    url: `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?id=eq.${deleteFetch?.id}`,
+    method: "DELETE",
+    headers: headersSupabase,
+    actionFn: () => {
+      if (deleteFetch?.imagePath) deleteImageFromStorage(deleteFetch.imagePath);
     },
-    onError: (error) => toast.error(error.message),
   });
 
-  return { deleteContact, isPending, error };
+  useEffect(() => {
+    if (deleteFetch !== null) deleteFn();
+  }, [deleteFetch]);
+
+  return { setDeleteFetch, isDeleting, error };
 }

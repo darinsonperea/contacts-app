@@ -1,33 +1,8 @@
-import { PAGE_SIZE } from "../utils/helper";
-import { Contacts, EditContactType } from "../utils/types";
-import { supabase } from "./supabase";
+import { EditContactType } from "../utils/types";
+import { supabase, supabaseUrl } from "./supabase";
 
-export async function getContacts(page?: number) {
-  let query = supabase.from("contacts").select("*", { count: "exact" });
-
-  if (page) {
-    const from = (page - 1) * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
-    query = query.range(from, to);
-  }
-
-  const { data, count, error } = await query;
-
-  if (error) throw new Error(error.message);
-
-  return { data, count };
-}
-
-export async function createContact(newContact: Contacts) {
-  const { data, error } = await supabase
-    .from("contacts")
-    .insert([newContact])
-    .select();
-
-  if (error) throw new Error(error.message);
-
-  return data;
-}
+const storagePath = "storage/v1/object/public/avatars";
+const savedPath = `${supabaseUrl}/${storagePath}`;
 
 export async function editContact(contactToEdit: EditContactType) {
   const { data, error } = await supabase
@@ -41,26 +16,17 @@ export async function editContact(contactToEdit: EditContactType) {
   return data;
 }
 
-export async function toggleLike({
-  id,
-  favorite,
-}: {
-  id: number;
-  favorite: boolean;
-}) {
-  const { data, error } = await supabase
-    .from("contacts")
-    .update({ favorite })
-    .eq("id", id)
-    .select();
+// Bucket actions
+
+export async function uploadImageToStorage(image: File, imageName: string) {
+  const { error } = await supabase.storage
+    .from("avatars")
+    .upload(imageName, image);
 
   if (error) throw new Error(error.message);
-
-  return data;
 }
 
-export async function deleteContact(id: number) {
-  const { error } = await supabase.from("contacts").delete().eq("id", id);
-
-  if (error) throw new Error(error.message);
+export async function deleteImageFromStorage(imagePath: string) {
+  const imageName = imagePath.substring(savedPath.length + 1);
+  await supabase.storage.from("avatars").remove([imageName]);
 }

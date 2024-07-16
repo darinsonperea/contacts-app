@@ -1,14 +1,16 @@
+import { useAuth } from "../context/AuthContext";
 import ContactCards from "../features/contacts/ContactCards";
 import FavoriteCards from "../features/favorites/FavoriteCards";
-import { useContacts } from "../services/hooks/useContacts";
 import TitlePage from "../ui/TitlePage";
 
 function Overview() {
-  const { data, favorites } = useContacts();
+  const { manageGetFavorites, manageGetContacts } = useAuth();
+  const data = manageGetContacts();
+  const favorites = manageGetFavorites();
 
   const contacts = data
     ?.filter((contact) => contact.favorite === false)
-    .slice(0, 7);
+    .slice(0, 8);
 
   return (
     <>

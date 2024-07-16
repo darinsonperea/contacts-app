@@ -1,18 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { getContacts } from "../apiContacts";
-import { useSearchParams } from "react-router-dom";
+import { useContext } from "react";
+import { ContactsContext } from "../../context/ContactsContext";
 
-export function useContacts() {
-  const [searchParams] = useSearchParams();
-  // pagination
-  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
-
-  const { data: { data, count } = {}, error } = useQuery({
-    queryKey: ["contacts", page],
-    queryFn: () => getContacts(page),
-  });
-
-  const favorites = data?.filter((contact) => contact.favorite === true);
-
-  return { data, favorites, error, count };
-}
+export const useContacts = () => {
+  const context = useContext(ContactsContext);
+  if (context === undefined) {
+    throw new Error("useContacts must be used within a ContactsProvider");
+  }
+  return context;
+};

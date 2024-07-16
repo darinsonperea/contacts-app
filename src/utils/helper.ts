@@ -1,4 +1,4 @@
-import { Contacts, Gender } from "./types";
+import { ContactsTypes, DefaultContact, Gender } from "./types";
 
 export const PAGE_SIZE = 16;
 
@@ -24,12 +24,14 @@ export async function defaultContacts() {
   const response = await fetch("https://reqres.in/api/users?per_page=12");
   const data = await response.json();
 
-  const contacts = data.data.map((contact) => ({
-    name: contact.first_name,
-    lastName: contact.last_name,
-    ...contact,
-    favorite: false,
-  }));
+  const contacts: ContactsTypes[] = data.data.map(
+    (contact: DefaultContact) => ({
+      name: contact.first_name,
+      lastName: contact.last_name,
+      ...contact,
+      favorite: false,
+    })
+  );
 
   return contacts;
 }

@@ -1,4 +1,4 @@
-import { ReduxContacts } from "../../utils/types";
+import { ContactsTypes } from "../../utils/types";
 
 export async function getContacts() {
   // const response = await fetch("https://reqres.in/api/users?page=1");
@@ -8,7 +8,7 @@ export async function getContacts() {
   return data;
 }
 
-export async function createContact(newContact: ReduxContacts) {
+export async function createContact(newContact: ContactsTypes) {
   const response = fetch("http://localhost:3000/contacts", {
     method: "POST",
     body: JSON.stringify(newContact),

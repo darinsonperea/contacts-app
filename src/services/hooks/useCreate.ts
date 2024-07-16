@@ -1,25 +1,46 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createContact as createContactApi } from "../apiContacts";
+import { useEffect, useState } from "react";
+import { ContactWithoutId } from "../../utils/types";
+import { headersSupabase, supabaseUrl } from "../supabase";
+import useFetch from "../../hooks/useFetch";
+import { uploadImageToStorage } from "../apiContacts";
 import toast from "react-hot-toast";
+import { useContacts } from "./useContacts";
+
+const storagePath = "storage/v1/object/public/avatars";
+const savedPath = `${supabaseUrl}/${storagePath}`;
+let imageName: string;
 
 export function useCreate() {
-  const queryClient = useQueryClient();
+  const [contact, setContact] = useState<ContactWithoutId>();
+  const { refetch: test } = useContacts();
+
+  if (contact?.avatar instanceof File) {
+    imageName = `${Math.random()}-${contact?.avatar?.name}`.replace("/", "");
+  }
+  const imagePath = `${savedPath}/${imageName}`;
 
   const {
-    mutate: createContact,
-    isPending,
     error,
-  } = useMutation({
-    mutationFn: createContactApi,
-    onSuccess: () => {
-      toast.success("Contact created successfully", { icon: "🙃" });
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+    isLoading: isCreating,
+    mutate: createFn,
+  } = useFetch({
+    url: "https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts",
+    method: "POST",
+    headers: headersSupabase,
+    body: { ...contact, avatar: imagePath },
+    actionFn: () => {
+      if (contact?.avatar instanceof File)
+        uploadImageToStorage(contact.avatar, imageName);
     },
-    onError: (error) => {
-      toast.error("Something went wrong please try later");
-      console.log(error);
+    onSuccess: () => {
+      toast.success("Contact created successfully");
+      test();
     },
   });
 
-  return { createContact, isPending, error };
+  useEffect(() => {
+    if (contact) createFn();
+  }, [contact]);
+
+  return { setContact, isCreating, error };
 }
