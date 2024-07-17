@@ -4,7 +4,7 @@ import { headersSupabase, supabaseUrl } from "../supabase";
 import useFetch from "../../hooks/useFetch";
 import { uploadImageToStorage } from "../apiContacts";
 import toast from "react-hot-toast";
-import { useContacts } from "./useContacts";
+import useUser from "../../features/authentication/hooks/useUser";
 
 const storagePath = "storage/v1/object/public/avatars";
 const savedPath = `${supabaseUrl}/${storagePath}`;
@@ -12,29 +12,28 @@ let imageName: string;
 
 export function useCreate() {
   const [contact, setContact] = useState<ContactWithoutId>();
-  const { refetch: test } = useContacts();
+  const { id } = useUser();
 
   if (contact?.avatar instanceof File) {
     imageName = `${Math.random()}-${contact?.avatar?.name}`.replace("/", "");
   }
   const imagePath = `${savedPath}/${imageName}`;
 
+  if (contact?.avatar instanceof File) {
+    uploadImageToStorage(contact.avatar, imageName);
+  }
+
   const {
     error,
     isLoading: isCreating,
-    mutate: createFn,
+    queryFn: createFn,
   } = useFetch({
     url: "https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts",
     method: "POST",
     headers: headersSupabase,
-    body: { ...contact, avatar: imagePath },
-    actionFn: () => {
-      if (contact?.avatar instanceof File)
-        uploadImageToStorage(contact.avatar, imageName);
-    },
+    body: { ...contact, avatar: imagePath, userId: id },
     onSuccess: () => {
       toast.success("Contact created successfully");
-      test();
     },
   });
 

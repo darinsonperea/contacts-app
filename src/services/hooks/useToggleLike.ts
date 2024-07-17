@@ -15,7 +15,7 @@ export function useToggleLike() {
   };
 
   const {
-    mutate: toggleFn,
+    queryFn: toggleFn,
     error,
     isLoading: isToggling,
   } = useFetch({

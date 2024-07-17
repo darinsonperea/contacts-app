@@ -3,40 +3,37 @@ import useFetch from "../../../hooks/useFetch";
 import { LoginTypes } from "../../../utils/types";
 import { headersSupabase } from "../../../services/supabase";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function useLogin() {
   const [user, setUser] = useState<LoginTypes | null>(null);
-  const [authData, setAuthData] = useState();
   const navigate = useNavigate();
 
-  const { mutate: loginFn } = useFetch({
+  const { queryFn: loginFn } = useFetch({
     url: "https://dwnavszoazxzffdtrhhm.supabase.co/auth/v1/token?grant_type=password",
     method: "POST",
     headers: headersSupabase,
     body: { ...user },
     onSuccess: () => {
-      setTimeout(() => {
-        navigate("/contacts");
-      }, 1000);
+      navigate("/contacts");
+    },
+    onError: () => {
+      toast.error("The credentials are invalid!");
     },
   });
 
   const saveAuthInfo = async () => {
     const authSupabase = await loginFn();
-    setAuthData(authSupabase);
+
+    localStorage.setItem(
+      "sb-dwnavszoazxzffdtrhhm-auth-token",
+      JSON.stringify(authSupabase)
+    );
   };
 
   useEffect(() => {
     if (user !== null) saveAuthInfo();
   }, [user]);
-
-  useEffect(() => {
-    if (authData !== undefined)
-      localStorage.setItem(
-        "sb-dwnavszoazxzffdtrhhm-auth-token",
-        JSON.stringify(authData)
-      );
-  }, [authData]);
 
   return { setUser };
 }

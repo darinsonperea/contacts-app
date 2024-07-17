@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { QueryTypes } from "../utils/types";
 
-function useQuery<T>({ url, headers }: QueryTypes) {
+function useQuery<T>({ url, headers, delay = 0 }: QueryTypes) {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -30,9 +30,10 @@ function useQuery<T>({ url, headers }: QueryTypes) {
     queryFn();
   }, [queryFn]);
 
-  function refetch() {
+  const refetch = async () => {
+    await new Promise((resolve) => setTimeout(resolve, delay)); // Retraso de 500 ms
     queryFn();
-  }
+  };
 
   return { data, isLoading, error, refetch };
 }

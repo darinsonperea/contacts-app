@@ -27,17 +27,14 @@
 // }
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout as logoutApi } from "../../../services/apiAuth";
-import { useContacts } from "../../../services/hooks/useContacts";
 
 export default function useLogout() {
   const queryClient = useQueryClient();
-  const { refetch } = useContacts();
 
   const { mutate: logout } = useMutation({
     mutationFn: logoutApi,
     onSuccess: () => {
       queryClient.removeQueries();
-      refetch();
     },
   });
 

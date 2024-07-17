@@ -11,7 +11,11 @@ export default function useUser() {
     queryFn: getCurrentUser,
   });
 
-  return { data, isAuthenticated: data?.role === "authenticated" };
+  return {
+    data,
+    isAuthenticated: data?.role === "authenticated",
+    id: data?.id,
+  };
 }
 
 // export default function useUser() {

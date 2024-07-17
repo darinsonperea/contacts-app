@@ -24,7 +24,7 @@ export default function AuthProvider({
 }) {
   const dispatch = useDispatch();
   const { isAuthenticated } = useUser();
-  const { favorites: favoritesApi, data } = useContacts();
+  const { favorites: favoritesApi, data, refetch } = useContacts();
   const { setContact } = useCreate();
   const { setDeleteFetch } = useDelete();
   const { setToggle } = useToggleLike();
@@ -38,26 +38,36 @@ export default function AuthProvider({
 
   function manageGetFavorites() {
     const favorites = isAuthenticated ? favoritesApi : favoritesRedux;
-
     return favorites;
   }
 
-  function manageCreateContact(newContact: ContactWithoutId) {
+  async function manageCreateContact(newContact: ContactWithoutId) {
     const CUSTOM_ID = crypto.randomUUID();
 
-    isAuthenticated
-      ? setContact(newContact)
-      : dispatch(add({ id: CUSTOM_ID, ...newContact }));
+    if (isAuthenticated) {
+      await setContact(newContact);
+      return refetch();
+    }
+
+    dispatch(add({ id: CUSTOM_ID, ...newContact }));
   }
 
-  function manageDeleteContact(id: number, imagePath?: string) {
-    isAuthenticated
-      ? imagePath && setDeleteFetch({ id, imagePath })
-      : dispatch(remove(id));
+  async function manageDeleteContact(id: number, imagePath?: string) {
+    if (isAuthenticated) {
+      imagePath && (await setDeleteFetch({ id, imagePath }));
+      return refetch();
+    }
+
+    dispatch(remove(id));
   }
 
-  function manageToggleLike(id: number, favorite: boolean) {
-    isAuthenticated ? setToggle({ id, favorite }) : dispatch(liked(id));
+  async function manageToggleLike(id: number, favorite: boolean) {
+    if (isAuthenticated) {
+      await setToggle({ id, favorite });
+      return refetch();
+    }
+
+    dispatch(liked(id));
   }
 
   return (

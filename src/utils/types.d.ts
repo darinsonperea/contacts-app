@@ -86,12 +86,14 @@ export interface FetchTypes {
   method: Methods;
   body?: object;
   headers?: HeadersInit;
-  actionFn?: () => void;
+  // actionFn?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
 }
 
-export type QueryTypes = Pick<FetchTypes, "url" | "headers">;
+export type QueryTypes = Pick<FetchTypes, "url" | "headers"> & {
+  delay?: number;
+};
 
 // Auth types
 

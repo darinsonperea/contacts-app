@@ -1,10 +1,24 @@
-import { useContext } from "react";
-import { ContactsContext } from "../../context/ContactsContext";
+import { useMemo } from "react";
+import useQuery from "../../hooks/useQuery";
+import { ContactDataType } from "../../utils/types";
+import { headersSupabase } from "../supabase";
+
+let id: string;
+const AuthInfo = localStorage.getItem("sb-dwnavszoazxzffdtrhhm-auth-token");
 
 export const useContacts = () => {
-  const context = useContext(ContactsContext);
-  if (context === undefined) {
-    throw new Error("useContacts must be used within a ContactsProvider");
-  }
-  return context;
+  if (AuthInfo) id = JSON.parse(AuthInfo).user.id;
+
+  const { data, isLoading, error, refetch } = useQuery<ContactDataType[]>({
+    url: `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?userId=eq.${id}&select=*`,
+    headers: headersSupabase,
+    delay: 300,
+  });
+
+  const favorites = useMemo(
+    () => data?.filter((contact) => contact.favorite === true),
+    [data]
+  );
+
+  return { favorites, data, isLoading, error, refetch };
 };

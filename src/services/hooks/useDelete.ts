@@ -11,17 +11,16 @@ interface useDeleteTypes {
 export function useDelete() {
   const [deleteFetch, setDeleteFetch] = useState<useDeleteTypes | null>(null);
 
+  if (deleteFetch?.imagePath) deleteImageFromStorage(deleteFetch?.imagePath);
+
   const {
     isLoading: isDeleting,
     error,
-    mutate: deleteFn,
+    queryFn: deleteFn,
   } = useFetch({
     url: `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?id=eq.${deleteFetch?.id}`,
     method: "DELETE",
     headers: headersSupabase,
-    actionFn: () => {
-      if (deleteFetch?.imagePath) deleteImageFromStorage(deleteFetch.imagePath);
-    },
   });
 
   useEffect(() => {

@@ -146,6 +146,9 @@ function FormContact() {
           <input
             type="file"
             onChange={(event) => setAvatar(event.target.files?.[0])}
+            style={{
+              width: "290px",
+            }}
           />
         )}
 
