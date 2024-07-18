@@ -13,7 +13,7 @@ export default function useUser() {
 
   return {
     data,
-    isAuthenticated: data?.role === "authenticated",
+    isAuthenticated: data ? data.role === "authenticated" : false,
     id: data?.id,
   };
 }

@@ -2,6 +2,7 @@ import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { InitialData } from "../../utils/types";
 import { defaultContacts } from "../../utils/helper";
+import toast from "react-hot-toast";
 
 const defaultContactsRedux = await defaultContacts();
 
@@ -22,6 +23,7 @@ const contactsSlice = createSlice({
     },
     add(state, action) {
       state.contacts.push(action.payload);
+      toast.success("Contact created successfully");
     },
     edit(state, action) {
       const contact = state.contacts.find(

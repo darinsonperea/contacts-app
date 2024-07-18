@@ -105,9 +105,9 @@ function Header() {
           </ButtonForm>
 
           {isAuthenticated ? (
-            <button onClick={handlerLogout}>{Logout()}</button>
+            <button onClick={handlerLogout}>{<Logout />}</button>
           ) : (
-            User()
+            <User />
           )}
         </StyledNav>
       </StyledHeader>

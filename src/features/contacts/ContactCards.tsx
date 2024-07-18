@@ -1,4 +1,4 @@
-import { useAuth } from "../../context/AuthContext";
+import { useData } from "../../context/DataContext";
 import Heart from "../../icons/Heart";
 import HeartBroken from "../../icons/HeartBroken";
 import Trash from "../../icons/Trash";
@@ -8,7 +8,7 @@ import { CardsProps } from "../../utils/types";
 import { StyledSection } from "../favorites/FavoriteCards";
 
 function ContactCards({ flag, contacts }: CardsProps) {
-  const { manageDeleteContact, manageToggleLike } = useAuth();
+  const { manageDeleteContact, manageToggleLike } = useData();
 
   return (
     <StyledSection>

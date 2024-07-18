@@ -1,10 +1,10 @@
-import { useAuth } from "../context/AuthContext";
+import { useData } from "../context/DataContext";
 import ContactCards from "../features/contacts/ContactCards";
 import FavoriteCards from "../features/favorites/FavoriteCards";
 import TitlePage from "../ui/TitlePage";
 
 function Overview() {
-  const { manageGetFavorites, manageGetContacts } = useAuth();
+  const { manageGetFavorites, manageGetContacts } = useData();
   const data = manageGetContacts();
   const favorites = manageGetFavorites();
 

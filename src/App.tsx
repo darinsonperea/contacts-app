@@ -8,7 +8,7 @@ import Layout from "./ui/Layout";
 import Overview from "./pages/Overview";
 import Contacts from "./pages/Contacts";
 import Favorites from "./pages/Favorites";
-import AuthProvider from "./context/AuthContext";
+import DataProvider from "./context/DataContext";
 import NotFound from "./pages/NotFound";
 import Login from "./features/authentication/Login";
 import SignUp from "./features/authentication/SignUp";
@@ -27,9 +27,9 @@ function App() {
     <>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <GlobalStyles />
-          <BrowserRouter>
-            <AuthProvider>
+          <DataProvider>
+            <GlobalStyles />
+            <BrowserRouter>
               <Routes>
                 <Route
                   element={
@@ -53,8 +53,8 @@ function App() {
                   <Route path="signup" element={<SignUp />} />
                 </Route>
               </Routes>
-            </AuthProvider>
-          </BrowserRouter>
+            </BrowserRouter>
+          </DataProvider>
           <Toaster
             position="top-right"
             gutter={8}

@@ -15,9 +15,9 @@ import { useDelete } from "../services/hooks/useDelete";
 import { useToggleLike } from "../services/hooks/useToggleLike";
 import { useContacts } from "../services/hooks/useContacts";
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const DataContext = createContext<AuthContextType | null>(null);
 
-export default function AuthProvider({
+export default function DataProvider({
   children,
 }: {
   children: React.ReactNode;
@@ -32,6 +32,8 @@ export default function AuthProvider({
   const favoritesRedux = useSelector(getFavoritesSlice);
 
   function manageGetContacts() {
+    console.log(isAuthenticated);
+
     const contacts = isAuthenticated ? data : dataRedux;
     return contacts ?? [];
   }
@@ -71,7 +73,7 @@ export default function AuthProvider({
   }
 
   return (
-    <AuthContext.Provider
+    <DataContext.Provider
       value={{
         isAuthenticated,
         manageCreateContact,
@@ -82,12 +84,12 @@ export default function AuthProvider({
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </DataContext.Provider>
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
+export function useData() {
+  const context = useContext(DataContext);
 
   if (!context) throw new Error("The provider was used outside the children");
 

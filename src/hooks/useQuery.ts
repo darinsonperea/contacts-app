@@ -31,7 +31,7 @@ function useQuery<T>({ url, headers, delay = 0 }: QueryTypes) {
   }, [queryFn]);
 
   const refetch = async () => {
-    await new Promise((resolve) => setTimeout(resolve, delay)); // Retraso de 500 ms
+    await new Promise((resolve) => setTimeout(resolve, delay)); // Delay
     queryFn();
   };
 

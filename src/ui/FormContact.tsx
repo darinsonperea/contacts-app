@@ -1,7 +1,7 @@
 import { getGenderByName, randomInteger } from "../utils/helper";
-import { useAuth } from "../context/AuthContext";
+import { useData } from "../context/DataContext";
 import styled from "styled-components";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ContactWithoutId } from "../utils/types";
 
 const FormContainer = styled.div`
@@ -80,20 +80,38 @@ const ContainerCheckbox = styled.div`
   }
 `;
 
+const StyledError = styled.span`
+  color: #ff0000e3;
+  font-size: 14px;
+  line-height: 20px;
+`;
+
 function FormContact() {
-  const [name, setName] = useState("Darinson");
-  const [lastName, setLastName] = useState("Perea");
-  const [email, setEmail] = useState("darin@gmail.com");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [favorite, setFavorite] = useState(false);
-  const [avatar, setAvatar] = useState<File | undefined>(undefined);
+  const [avatar, setAvatar] = useState<File | undefined | null>(undefined);
   const [error, setError] = useState("");
-  const { manageCreateContact, isAuthenticated } = useAuth();
+  const { manageCreateContact, isAuthenticated } = useData();
+  const resetFile = useRef<HTMLInputElement>(null);
+
+  function clearForm() {
+    setName("");
+    setLastName("");
+    setEmail("");
+    setFavorite(false);
+    setError("");
+    if (resetFile.current) resetFile.current.value = "";
+  }
 
   async function handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!name || !lastName || !email)
+    if (!name || !lastName || !email) {
       return setError("A field can't be empty*");
+    }
+    if (name && lastName && email) setError("");
 
     const gender = await getGenderByName(name);
     const randomNumberPhoto = randomInteger(0, 78);
@@ -108,12 +126,13 @@ function FormContact() {
     };
 
     manageCreateContact(newContact);
+    clearForm();
   }
 
   return (
     <FormContainer>
       <StyledForm onSubmit={handleSubmit}>
-        <span className="text-red-500 text-sm">{error}</span>
+        <StyledError>{error}</StyledError>
         <StyledInput
           type="text"
           placeholder="Name"
@@ -145,6 +164,7 @@ function FormContact() {
         {isAuthenticated && (
           <input
             type="file"
+            ref={resetFile}
             onChange={(event) => setAvatar(event.target.files?.[0])}
             style={{
               width: "290px",
@@ -157,6 +177,7 @@ function FormContact() {
           <input
             type="checkbox"
             id="favorite"
+            checked={favorite}
             onChange={(event) => setFavorite(event.target.checked)}
           />
         </ContainerCheckbox>

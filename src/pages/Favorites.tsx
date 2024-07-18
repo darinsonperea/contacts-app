@@ -1,9 +1,9 @@
-import { useAuth } from "../context/AuthContext";
+import { useData } from "../context/DataContext";
 import FavoriteCards from "../features/favorites/FavoriteCards";
 import TitlePage from "../ui/TitlePage";
 
 function Favorites() {
-  const { manageGetFavorites } = useAuth();
+  const { manageGetFavorites } = useData();
   const favorites = manageGetFavorites();
 
   return (

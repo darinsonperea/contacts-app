@@ -4,9 +4,9 @@ import { ContactDataType } from "../../utils/types";
 import { headersSupabase } from "../supabase";
 
 let id: string;
-const AuthInfo = localStorage.getItem("sb-dwnavszoazxzffdtrhhm-auth-token");
 
 export const useContacts = () => {
+  const AuthInfo = localStorage.getItem("sb-dwnavszoazxzffdtrhhm-auth-token");
   if (AuthInfo) id = JSON.parse(AuthInfo).user.id;
 
   const { data, isLoading, error, refetch } = useQuery<ContactDataType[]>({
@@ -19,6 +19,8 @@ export const useContacts = () => {
     () => data?.filter((contact) => contact.favorite === true),
     [data]
   );
+
+  console.log(id);
 
   return { favorites, data, isLoading, error, refetch };
 };
