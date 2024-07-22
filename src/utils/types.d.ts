@@ -21,7 +21,7 @@ export interface DefaultContact {
 }
 
 export interface ContactsTypes {
-  id: number;
+  id: UUID;
   name: string;
   lastName: string;
   email: string;
