@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import { headersSupabase } from "../supabase";
 import { deleteImageFromStorage } from "../apiContacts";
+import { UUID } from "../../utils/types";
 
 interface useDeleteTypes {
-  id: number;
+  id: UUID;
   imagePath: string;
 }
 

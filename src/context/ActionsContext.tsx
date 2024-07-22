@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { add, liked, remove, toggleOpen } from "../redux/slices/contactsSlice";
-import { ActionsContextType, ContactWithoutId } from "../utils/types";
+import { ActionsContextType, ContactWithoutId, UUID } from "../utils/types";
 import { useSelector } from "react-redux";
 import { useCreate } from "../services/hooks/useCreate";
 import { useDelete } from "../services/hooks/useDelete";
@@ -27,12 +27,12 @@ export default function ActionsProvider({
     dispatch(toggleOpen());
   }
 
-  async function manageDeleteContact(id: number, imagePath?: string) {
+  async function manageDeleteContact(id: UUID, imagePath?: string) {
     dispatch(remove(id));
     if (isAuthenticated) imagePath && setDeleteFetch({ id, imagePath });
   }
 
-  async function manageToggleLike(id: number, favorite: boolean) {
+  async function manageToggleLike(id: UUID, favorite: boolean) {
     dispatch(liked(id));
     if (isAuthenticated) setToggle({ id, favorite });
   }

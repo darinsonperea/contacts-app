@@ -1,6 +1,6 @@
 type Methods = "POST" | "PUT" | "PATCH" | "DELETE";
 export type ContactWithoutId = Omit<ContactDataType, "id">;
-type UUID = `${string}-${string}-${string}-${string}-${string}`;
+export type UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 export interface ContactDataType {
   id: UUID;
@@ -61,8 +61,8 @@ export type ThemeContextType = {
 
 export interface ActionsContextType {
   manageCreateContact: (newContact: ContactWithoutId) => void;
-  manageDeleteContact: (id: number, imagePath?: string) => void;
-  manageToggleLike: (id: number, favorite: boolean) => void;
+  manageDeleteContact: (id: UUID, imagePath?: string) => void;
+  manageToggleLike: (id: UUID, favorite: boolean) => void;
 }
 
 export interface LoginTypes {
