@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { InitialData } from "@/utils/types";
 import toast from "react-hot-toast";
+import { InitialData } from "../../utils/types";
 
 const initialState: InitialData = {
   contacts: [],

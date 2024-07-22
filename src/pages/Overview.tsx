@@ -6,13 +6,14 @@ import {
   contactsActions,
   getFavoritesSlice,
 } from "../redux/slices/contactsSlice";
+import { ContactsTypes } from "../utils/types";
 
 function Overview() {
   const favorites = useSelector(getFavoritesSlice);
   const { contacts: data } = useSelector(contactsActions);
 
   const contacts = data
-    ?.filter((contact) => contact.favorite === false)
+    ?.filter((contact: ContactsTypes) => contact.favorite === false)
     .slice(0, 8);
 
   return (
