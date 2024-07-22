@@ -1,12 +1,15 @@
-import { useData } from "../context/DataContext";
+import { useSelector } from "react-redux";
 import ContactCards from "../features/contacts/ContactCards";
 import FavoriteCards from "../features/favorites/FavoriteCards";
 import TitlePage from "../ui/TitlePage";
+import {
+  contactsActions,
+  getFavoritesSlice,
+} from "../redux/slices/contactsSlice";
 
 function Overview() {
-  const { manageGetFavorites, manageGetContacts } = useData();
-  const data = manageGetContacts();
-  const favorites = manageGetFavorites();
+  const favorites = useSelector(getFavoritesSlice);
+  const { contacts: data } = useSelector(contactsActions);
 
   const contacts = data
     ?.filter((contact) => contact.favorite === false)

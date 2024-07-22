@@ -24,17 +24,18 @@ function Login() {
     >
       <StyledInput
         type="email"
-        id=""
         placeholder="Email"
         className="p-3 rounded-full outline-none w-full bg-green-form placeholder:text-gray-700"
         onChange={(event) => setEmail(event.target.value)}
       />
+
       <StyledInput
         type="text"
         placeholder="Password"
         className="p-3 rounded-full outline-none w-full bg-green-form placeholder:text-gray-700"
         onChange={(event) => setPassword(event.target.value)}
       />
+
       <StyledButton className="py-1 px-6 rounded-lg w-max border border-black mt-6 dark:text-white dark:border-gray-400">
         Log in
       </StyledButton>

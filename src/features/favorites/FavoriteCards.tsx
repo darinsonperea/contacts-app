@@ -1,7 +1,7 @@
 import Card from "../../ui/Card";
 import HeartBroken from "../../icons/HeartBroken";
 import { CardsProps } from "../../utils/types";
-import { useData } from "../../context/DataContext";
+import { useActions } from "../../context/ActionsContext";
 import styled from "styled-components";
 import { colors } from "../../utils/helper";
 
@@ -19,7 +19,7 @@ export const StyledSection = styled.section`
 `;
 
 function FavoriteCards({ contacts: favorites }: CardsProps) {
-  const { manageToggleLike } = useData();
+  const { manageToggleLike } = useActions();
 
   return (
     <>

@@ -1,26 +1,27 @@
-import { useMemo } from "react";
 import useQuery from "../../hooks/useQuery";
 import { ContactDataType } from "../../utils/types";
 import { headersSupabase } from "../supabase";
-
-let id: string;
+import { useSelector } from "react-redux";
+import { AuthInfo } from "../../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
+import { initial } from "../../redux/slices/contactsSlice";
+import { useEffect } from "react";
+import { defaultContacts } from "../../utils/helper";
 
 export const useContacts = () => {
-  const AuthInfo = localStorage.getItem("sb-dwnavszoazxzffdtrhhm-auth-token");
-  if (AuthInfo) id = JSON.parse(AuthInfo).user.id;
+  const { id, isAuthenticated } = useSelector(AuthInfo);
+  const dispatch = useDispatch();
 
-  const { data, isLoading, error, refetch } = useQuery<ContactDataType[]>({
+  const { data } = useQuery<ContactDataType[]>({
     url: `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?userId=eq.${id}&select=*`,
     headers: headersSupabase,
-    delay: 300,
   });
 
-  const favorites = useMemo(
-    () => data?.filter((contact) => contact.favorite === true),
-    [data]
-  );
-
-  console.log(id);
-
-  return { favorites, data, isLoading, error, refetch };
+  useEffect(() => {
+    async function getContacts() {
+      if (isAuthenticated) return dispatch(initial(data));
+      dispatch(initial(await defaultContacts()));
+    }
+    getContacts();
+  }, [dispatch, isAuthenticated, data]);
 };

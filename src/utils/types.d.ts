@@ -1,18 +1,9 @@
 type Methods = "POST" | "PUT" | "PATCH" | "DELETE";
-type Avatar = CustomFile | unknown;
 export type ContactWithoutId = Omit<ContactDataType, "id">;
-
-interface CustomFile {
-  name: string;
-  size: number;
-  lastModified: number;
-  type: string;
-  webkitRelativePath: string;
-  lastModifiedDate: object;
-}
+type UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 export interface ContactDataType {
-  id: number;
+  id: UUID;
   name: string;
   lastName: string;
   email: string;
@@ -39,7 +30,8 @@ export interface ContactsTypes {
 }
 
 export type InitialData = {
-  contacts: ContactDataType[];
+  contacts: ContactsTypes[];
+  favorite: ContactsTypes[];
   isOpen: boolean;
 };
 
@@ -67,13 +59,10 @@ export type ThemeContextType = {
   isDarkMode: boolean;
 };
 
-export interface AuthContextType {
-  manageGetContacts: () => ContactTypes[] | undefined;
-  manageGetFavorites: () => ContactTypes[] | undefined;
+export interface ActionsContextType {
   manageCreateContact: (newContact: ContactWithoutId) => void;
   manageDeleteContact: (id: number, imagePath?: string) => void;
   manageToggleLike: (id: number, favorite: boolean) => void;
-  isAuthenticated: boolean;
 }
 
 export interface LoginTypes {

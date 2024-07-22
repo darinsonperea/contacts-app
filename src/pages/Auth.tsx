@@ -37,9 +37,9 @@ function Auth() {
     <StyledMain>
       <StyledSection>
         <ContainerImage>
-          <Image src="/img/Fav-icon_Globant.png" alt="Globant logo" to="/" />
+          <Image src={`/img/Fav-icon_Globant.png`} alt="Globant logo" to="/" />
         </ContainerImage>
-        <ContainerLinks className="w-max space-x-2 mx-auto my-6">
+        <ContainerLinks>
           <NavLink to="login">Login</NavLink>
           <NavLink to="signup">Sign Up</NavLink>
         </ContainerLinks>

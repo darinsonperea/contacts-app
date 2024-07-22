@@ -11,6 +11,7 @@ import User from "../icons/User";
 import styled from "styled-components";
 import useLogout from "../features/authentication/hooks/useLogout";
 import useUser from "../features/authentication/hooks/useUser";
+import { AuthInfo } from "../redux/slices/authSlice";
 
 const StyledHeader = styled.header`
   height: 56px;
@@ -75,10 +76,11 @@ const StyledNavLink = styled(NavLink)`
 
 function Header() {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useUser();
-  const isFormOpen = useSelector(getOpen);
   const { toggleDarkMode, isDarkMode } = useDarkMode();
   const { logout } = useLogout();
+  const { isAuthenticated } = useSelector(AuthInfo);
+  const isFormOpen = useSelector(getOpen);
+  useUser();
 
   function handleClickIsFormOpen() {
     dispatch(toggleOpen());

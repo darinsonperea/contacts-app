@@ -10,7 +10,7 @@ function useFetch({
   onError,
 }: FetchTypes) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<unknown>();
 
   async function queryFn() {
     try {
@@ -22,15 +22,15 @@ function useFetch({
         headers: headers,
       });
 
-      if (response.status !== 200) return;
+      if (response.status !== 200)
+        throw new Error("Something went wrong try later!!");
 
       const data = await response.json();
       onSuccess?.();
       return data;
     } catch (error) {
       onError?.();
-      setError("Something went wrong, try later");
-      throw new Error('"Something went wrong, try later"');
+      setError(error);
     } finally {
       setIsLoading(false);
     }

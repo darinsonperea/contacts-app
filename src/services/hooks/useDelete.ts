@@ -11,8 +11,6 @@ interface useDeleteTypes {
 export function useDelete() {
   const [deleteFetch, setDeleteFetch] = useState<useDeleteTypes | null>(null);
 
-  if (deleteFetch?.imagePath) deleteImageFromStorage(deleteFetch?.imagePath);
-
   const {
     isLoading: isDeleting,
     error,
@@ -25,6 +23,8 @@ export function useDelete() {
 
   useEffect(() => {
     if (deleteFetch !== null) deleteFn();
+
+    if (deleteFetch?.imagePath) deleteImageFromStorage(deleteFetch?.imagePath);
   }, [deleteFetch]);
 
   return { setDeleteFetch, isDeleting, error };
