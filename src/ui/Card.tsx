@@ -46,7 +46,7 @@ function Card({
       <ContainerImage>
         <Image
           src={avatar}
-          alt={`Foto of ${name} ${lastName}`}
+          alt={`Photo of ${name} ${lastName}`}
           favorite={favorite}
           customizeClass={{
             width: "90px",
@@ -64,7 +64,6 @@ function Card({
         {name} {lastName}
       </p>
       <p
-        // colors: text-gray-400 dark:text-gray-300
         style={{
           fontSize: "12px",
           lineHeight: "1rem",

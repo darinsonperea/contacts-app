@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import FavoriteCards from "../features/favorites/FavoriteCards";
 import TitlePage from "../ui/TitlePage";
 import { getFavoritesSlice } from "../redux/slices/contactsSlice";
+import CustomMessage from "../ui/CustomMessage";
 
 function Favorites() {
   const favorites = useSelector(getFavoritesSlice);
@@ -9,7 +10,11 @@ function Favorites() {
   return (
     <>
       <TitlePage title="Favorites" />
-      <FavoriteCards contacts={favorites} />
+      {favorites.length ? (
+        <FavoriteCards contacts={favorites} />
+      ) : (
+        <CustomMessage message="Add new favorite contacts" />
+      )}
     </>
   );
 }

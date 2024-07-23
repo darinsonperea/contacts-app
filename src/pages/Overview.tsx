@@ -7,6 +7,7 @@ import {
   getFavoritesSlice,
 } from "../redux/slices/contactsSlice";
 import { ContactsTypes } from "../utils/types";
+import CustomMessage from "../ui/CustomMessage";
 
 function Overview() {
   const favorites = useSelector(getFavoritesSlice);
@@ -19,9 +20,18 @@ function Overview() {
   return (
     <>
       <TitlePage title="Favorites" />
-      <FavoriteCards contacts={favorites?.slice(0, 4)} />
+      {favorites.length ? (
+        <FavoriteCards contacts={favorites?.slice(0, 4)} />
+      ) : (
+        <CustomMessage message="It looks like you don't have any favorite contact!!" />
+      )}
+
       <TitlePage title="Contacts List" />
-      <ContactCards contacts={contacts} flag={false} />
+      {contacts?.length ? (
+        <ContactCards contacts={contacts} flag={false} />
+      ) : (
+        <CustomMessage message="It seems that you have all your contacts in favorites" />
+      )}
     </>
   );
 }
