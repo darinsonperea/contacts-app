@@ -55,10 +55,10 @@ export const { initial, liked, remove, add, toggleOpen } =
 export default contactsSlice.reducer;
 
 export const contactsActions = (state: RootState) => state?.contacts;
+export const getOpen = (state: RootState) => state?.contacts?.isOpen;
 export const getContactsSlice = (state: RootState) =>
   state?.contacts?.contacts ?? [];
-export const getOpen = (state: RootState) => state?.contacts?.isOpen;
-export const getFavoritesSlice = createSelector(
-  [getContactsSlice],
-  (contacts) => contacts.filter((contact) => contact.favorite)
+export const getFavoritesSlice = createSelector([getContactsSlice], (contacts) =>
+  contacts.filter((contact) => contact.favorite)
 );
+
