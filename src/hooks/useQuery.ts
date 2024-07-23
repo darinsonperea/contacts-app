@@ -14,7 +14,8 @@ function useQuery<T>({ url, headers }: QueryTypes) {
         headers: headers,
       });
 
-      if (response.status !== 200) return;
+      if (response.status !== 200)
+        return setError("Something went wrong, try later");
 
       const newData: T = await response.json();
       setData(newData);
@@ -30,9 +31,9 @@ function useQuery<T>({ url, headers }: QueryTypes) {
     queryFn();
   }, [queryFn]);
 
-  function refetch() {
+  const refetch = async () => {
     queryFn();
-  }
+  };
 
   return { data, isLoading, error, refetch };
 }

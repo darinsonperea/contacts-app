@@ -1,24 +1,19 @@
 import { useState } from "react";
 import { FetchTypes } from "../utils/types";
-import { useContacts } from "../services/hooks/useContacts";
 
 function useFetch({
   url,
   method,
   body,
   headers,
-  actionFn,
   onSuccess,
   onError,
 }: FetchTypes) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const { refetch } = useContacts();
+  const [error, setError] = useState<unknown>();
 
-  async function mutate() {
+  async function queryFn() {
     try {
-      // Por si necesitas hacer algo antes de que se haga antes de el fetching
-      await actionFn?.();
       setError("");
       setIsLoading(true);
       const response = await fetch(url, {
@@ -27,22 +22,21 @@ function useFetch({
         headers: headers,
       });
 
-      if (response.ok) onSuccess?.();
-      if (response.status !== 200) return;
+      if (response.status !== 200)
+        throw new Error("Something went wrong try later!!");
 
       const data = await response.json();
+      onSuccess?.();
       return data;
     } catch (error) {
       onError?.();
-      console.log(error);
-      setError("Something went wrong, try later");
+      setError(error);
     } finally {
       setIsLoading(false);
-      refetch();
     }
   }
 
-  return { isLoading, error, mutate };
+  return { isLoading, error, queryFn };
 }
 
 export default useFetch;

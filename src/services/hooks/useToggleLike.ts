@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import { headersSupabase } from "../supabase";
+import { UUID } from "../../utils/types";
 
 interface UseToggleTypes {
-  id: number;
+  id: UUID;
   favorite: boolean;
 }
 
@@ -15,7 +16,7 @@ export function useToggleLike() {
   };
 
   const {
-    mutate: toggleFn,
+    queryFn: toggleFn,
     error,
     isLoading: isToggling,
   } = useFetch({

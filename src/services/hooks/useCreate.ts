@@ -4,7 +4,8 @@ import { headersSupabase, supabaseUrl } from "../supabase";
 import useFetch from "../../hooks/useFetch";
 import { uploadImageToStorage } from "../apiContacts";
 import toast from "react-hot-toast";
-import { useContacts } from "./useContacts";
+import { AuthInfo } from "../../redux/slices/authSlice";
+import { useSelector } from "react-redux";
 
 const storagePath = "storage/v1/object/public/avatars";
 const savedPath = `${supabaseUrl}/${storagePath}`;
@@ -12,7 +13,7 @@ let imageName: string;
 
 export function useCreate() {
   const [contact, setContact] = useState<ContactWithoutId>();
-  const { refetch: test } = useContacts();
+  const { id } = useSelector(AuthInfo);
 
   if (contact?.avatar instanceof File) {
     imageName = `${Math.random()}-${contact?.avatar?.name}`.replace("/", "");
@@ -22,23 +23,26 @@ export function useCreate() {
   const {
     error,
     isLoading: isCreating,
-    mutate: createFn,
+    queryFn: createFn,
   } = useFetch({
     url: "https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts",
     method: "POST",
     headers: headersSupabase,
-    body: { ...contact, avatar: imagePath },
-    actionFn: () => {
-      if (contact?.avatar instanceof File)
-        uploadImageToStorage(contact.avatar, imageName);
+    body: {
+      ...contact,
+      avatar: contact?.avatar instanceof File ? imagePath : contact?.avatar,
+      userId: id,
     },
     onSuccess: () => {
       toast.success("Contact created successfully");
-      test();
     },
   });
 
   useEffect(() => {
+    if (contact?.avatar instanceof File) {
+      uploadImageToStorage(contact.avatar, imageName);
+    }
+
     if (contact) createFn();
   }, [contact]);
 

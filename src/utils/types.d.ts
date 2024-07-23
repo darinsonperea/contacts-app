@@ -1,18 +1,9 @@
 type Methods = "POST" | "PUT" | "PATCH" | "DELETE";
-type Avatar = CustomFile | unknown;
 export type ContactWithoutId = Omit<ContactDataType, "id">;
-
-interface CustomFile {
-  name: string;
-  size: number;
-  lastModified: number;
-  type: string;
-  webkitRelativePath: string;
-  lastModifiedDate: object;
-}
+export type UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 export interface ContactDataType {
-  id: number;
+  id: UUID;
   name: string;
   lastName: string;
   email: string;
@@ -30,7 +21,7 @@ export interface DefaultContact {
 }
 
 export interface ContactsTypes {
-  id: number;
+  id: UUID;
   name: string;
   lastName: string;
   email: string;
@@ -39,7 +30,8 @@ export interface ContactsTypes {
 }
 
 export type InitialData = {
-  contacts: ContactDataType[];
+  contacts: ContactsTypes[];
+  favorite: ContactsTypes[];
   isOpen: boolean;
 };
 
@@ -67,13 +59,10 @@ export type ThemeContextType = {
   isDarkMode: boolean;
 };
 
-export interface AuthContextType {
-  manageGetContacts: () => ContactTypes[] | undefined;
-  manageGetFavorites: () => ContactTypes[] | undefined;
+export interface ActionsContextType {
   manageCreateContact: (newContact: ContactWithoutId) => void;
-  manageDeleteContact: (id: number, imagePath?: string) => void;
-  manageToggleLike: (id: number, favorite: boolean) => void;
-  isAuthenticated: boolean;
+  manageDeleteContact: (id: UUID, imagePath?: string) => void;
+  manageToggleLike: (id: UUID, favorite: boolean) => void;
 }
 
 export interface LoginTypes {
@@ -86,12 +75,14 @@ export interface FetchTypes {
   method: Methods;
   body?: object;
   headers?: HeadersInit;
-  actionFn?: () => void;
+  // actionFn?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
 }
 
-export type QueryTypes = Pick<FetchTypes, "url" | "headers">;
+export type QueryTypes = Pick<FetchTypes, "url" | "headers"> & {
+  delay?: number;
+};
 
 // Auth types
 

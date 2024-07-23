@@ -4,6 +4,7 @@ const Message = styled.h1`
   text-align: center;
   font-size: 1.25rem;
   line-height: 1.75rem;
+  color: var(--text--color);
 `;
 
 function CustomMessage({ message }: { message: string }) {

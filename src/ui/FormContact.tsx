@@ -1,8 +1,11 @@
 import { getGenderByName, randomInteger } from "../utils/helper";
-import { useAuth } from "../context/AuthContext";
+import { useActions } from "../context/ActionsContext";
 import styled from "styled-components";
-import { useState } from "react";
-import { ContactWithoutId } from "../utils/types";
+import { useEffect, useRef, useState } from "react";
+import { ContactDataType } from "../utils/types";
+import Image from "./Image";
+import { useSelector } from "react-redux";
+import { AuthInfo } from "../redux/slices/authSlice";
 
 const FormContainer = styled.div`
   background-color: var(--app--background);
@@ -37,6 +40,7 @@ const StyledInput = styled.input`
   border-bottom: 1px solid var(--white);
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
+  transition: border 0.5s;
 
   &::placeholder {
     color: var(--black);
@@ -80,48 +84,110 @@ const ContainerCheckbox = styled.div`
   }
 `;
 
+const ContainerAvatar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 18rem;
+`;
+
+interface FieldErrorsTypes {
+  name?: boolean;
+  lastName?: boolean;
+  email?: boolean;
+}
+
+const isValidEmail =
+  /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+
 function FormContact() {
-  const [name, setName] = useState("Darinson");
-  const [lastName, setLastName] = useState("Perea");
-  const [email, setEmail] = useState("darin@gmail.com");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [favorite, setFavorite] = useState(false);
   const [avatar, setAvatar] = useState<File | undefined>(undefined);
-  const [error, setError] = useState("");
-  const { manageCreateContact, isAuthenticated } = useAuth();
+  const [error, setError] = useState<FieldErrorsTypes>();
+  const [preview, setPreview] = useState("");
+  const resetFile = useRef<HTMLInputElement>(null);
+  const { isAuthenticated } = useSelector(AuthInfo);
+  const { manageCreateContact } = useActions();
+  const nameHasError = name === "";
+  const lastNameHasError = lastName === "";
+  const emailHasError = email === "" || !isValidEmail.test(email);
+
+  function clearForm() {
+    setName("");
+    setLastName("");
+    setEmail("");
+    setFavorite(false);
+    setPreview("");
+    if (resetFile.current) resetFile.current.value = "";
+  }
+
+  useEffect(() => {
+    if (avatar) setPreview(URL.createObjectURL(avatar));
+  }, [avatar]);
 
   async function handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!name || !lastName || !email)
-      return setError("A field can't be empty*");
+    if (!name || !lastName || !email) {
+      return setError({
+        name: nameHasError,
+        lastName: lastNameHasError,
+        email: emailHasError,
+      });
+    }
 
     const gender = await getGenderByName(name);
     const randomNumberPhoto = randomInteger(0, 78);
     const image = `https://xsgames.co/randomusers/assets/avatars/${gender}/${randomNumberPhoto}.jpg`;
 
-    const newContact: ContactWithoutId = {
+    const newContact: ContactDataType = {
+      id: crypto.randomUUID(),
       name,
       lastName,
       email,
       favorite,
-      avatar: isAuthenticated && avatar ? avatar : image,
+      avatar:
+        isAuthenticated && avatar
+          ? avatar
+          : isAuthenticated && avatar === undefined
+            ? "/img/default-user-pic.jpg"
+            : image,
     };
 
     manageCreateContact(newContact);
+    clearForm();
+  }
+
+  const handleErrorName = () => {
+    setError({ ...error, name: nameHasError });
+  };
+
+  function handleErrorLastName() {
+    setError({ ...error, lastName: lastNameHasError });
+  }
+
+  function handleErrorEmail() {
+    setError({ ...error, email: emailHasError });
   }
 
   return (
     <FormContainer>
       <StyledForm onSubmit={handleSubmit}>
-        <span className="text-red-500 text-sm">{error}</span>
         <StyledInput
           type="text"
           placeholder="Name"
           autoFocus
           value={name}
           autoComplete="off"
-          onChange={(event) => setName(event.target.value)}
-          // disabled={isPending}
+          onChange={(event) => {
+            setName(event.target.value);
+            handleErrorName();
+          }}
+          onBlur={handleErrorName}
+          style={{ borderBottom: error?.name ? "1px solid red" : "" }}
         />
 
         <StyledInput
@@ -129,8 +195,12 @@ function FormContact() {
           placeholder="Last name"
           value={lastName}
           autoComplete="off"
-          onChange={(event) => setLastName(event.target.value)}
-          // disabled={isPending}
+          onChange={(event) => {
+            setLastName(event.target.value);
+            handleErrorLastName();
+          }}
+          style={{ borderBottom: error?.lastName ? "1px solid red" : "" }}
+          onBlur={handleErrorLastName}
         />
 
         <StyledInput
@@ -138,15 +208,40 @@ function FormContact() {
           placeholder="Email"
           value={email}
           autoComplete="off"
-          onChange={(event) => setEmail(event.target.value)}
-          // disabled={isPending}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            handleErrorEmail();
+          }}
+          style={{ borderBottom: error?.email ? "1px solid red" : "" }}
+          onBlur={handleErrorEmail}
         />
 
         {isAuthenticated && (
-          <input
-            type="file"
-            onChange={(event) => setAvatar(event.target.files?.[0])}
-          />
+          <ContainerAvatar>
+            <input
+              type="file"
+              accept="image/*"
+              ref={resetFile}
+              onChange={(event) => setAvatar(event.target.files?.[0])}
+              style={{
+                width: "220px",
+              }}
+            />
+            {preview && (
+              <div>
+                <Image
+                  src={preview}
+                  alt={`Foto of ${name} ${lastName}`}
+                  customizeClass={{
+                    width: "60px",
+                    height: "60px",
+                    objectfit: "cover",
+                    borderradius: "50px",
+                  }}
+                />
+              </div>
+            )}
+          </ContainerAvatar>
         )}
 
         <ContainerCheckbox>
@@ -154,6 +249,7 @@ function FormContact() {
           <input
             type="checkbox"
             id="favorite"
+            checked={favorite}
             onChange={(event) => setFavorite(event.target.checked)}
           />
         </ContainerCheckbox>

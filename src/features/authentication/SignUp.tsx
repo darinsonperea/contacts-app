@@ -32,38 +32,28 @@ function SignUp() {
         id=""
         placeholder="Name"
         onChange={(event) => setName(event.target.value)}
-
-        // {...register("email", { required: "This field is required" })}
       />
+
       <StyledInput
         type="text"
         id=""
         placeholder="Last Name"
         onChange={(event) => setLastName(event.target.value)}
-
-        // {...register("email", { required: "This field is required" })}
       />
+
       <StyledInput
         type="email"
         id=""
         placeholder="Email"
         onChange={(event) => setEmail(event.target.value)}
-
-        // {...register("email", { required: "This field is required" })}
       />
+
       <StyledInput
         type="text"
         placeholder="Password"
         onChange={(event) => setPassword(event.target.value)}
-
-        // {...register("password", {
-        //   required: "This field is required ",
-        //   minLength: {
-        //     value: 6,
-        //     message: "The password must have at least 6 characters",
-        //   },
-        // })}
       />
+
       {/* <StyledInput
         type="text"
         placeholder="Confirm password"
