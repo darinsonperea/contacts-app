@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 
 import "@testing-library/jest-dom";
-import Card from "../ui/Card";
-import { ContactsTypes } from "../utils/types";
+import Card from "../../ui/Card";
+import { ContactsTypes } from "../../utils/types";
 
 describe("Card Component", () => {
   it("Should render a card with contact information", () => {

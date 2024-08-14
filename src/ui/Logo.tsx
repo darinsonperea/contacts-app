@@ -4,7 +4,7 @@ function Logo() {
   return (
     <Image
       src="/img/calvo.webp"
-      alt="An image of a bold person"
+      alt="An image of a bald person"
       to="/overview"
     />
   );

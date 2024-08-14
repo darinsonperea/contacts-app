@@ -21,17 +21,21 @@ export function randomInteger(min: number, max: number) {
 }
 
 export async function defaultContacts() {
-  const response = await fetch("https://reqres.in/api/users?per_page=12");
-  const data = await response.json();
+  try {
+    const response = await fetch("https://reqres.in/api/users?per_page=12");
+    const data = await response.json();
 
-  const contacts: ContactsTypes[] = data.data.map(
-    (contact: DefaultContact) => ({
-      name: contact.first_name,
-      lastName: contact.last_name,
-      ...contact,
-      favorite: false,
-    })
-  );
+    const contacts: ContactsTypes[] = data.data.map(
+      (contact: DefaultContact) => ({
+        name: contact.first_name,
+        lastName: contact.last_name,
+        ...contact,
+        favorite: false,
+      })
+    );
 
-  return contacts;
+    return contacts;
+  } catch (error) {
+    throw new Error(JSON.stringify(error));
+  }
 }
