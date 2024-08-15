@@ -5,7 +5,7 @@ import store from "../../redux/store";
 import ActionsProvider from "../../context/ActionsContext";
 
 describe("Form Contact Component", () => {
-  it("Should render all fields with their styles each one ", () => {
+  beforeEach(() => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <Provider store={store}>{children}</Provider>
     );
@@ -16,7 +16,9 @@ describe("Form Contact Component", () => {
       </ActionsProvider>,
       { wrapper }
     );
+  });
 
+  it("Should render all fields with their styles each one", () => {
     const name = screen.getByPlaceholderText("Name");
     const lastName = screen.getByPlaceholderText("Last name");
     const email = screen.getByPlaceholderText("Email");
@@ -25,4 +27,6 @@ describe("Form Contact Component", () => {
     expect(lastName).toBeInTheDocument();
     expect(email).toBeInTheDocument();
   });
+
+  it("Should display a value that the users enter", () => {});
 });
