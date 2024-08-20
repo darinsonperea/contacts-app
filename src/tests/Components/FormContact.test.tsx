@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import FormContact from "../../ui/FormContact";
 import { Provider } from "react-redux";
 import store from "../../redux/store";
@@ -29,4 +29,25 @@ describe("Form Contact Component", () => {
   });
 
   it("Should display a value that the users enter", () => {});
+
+  it("Should reset the form", () => {
+    const setName = vi.fn();
+    const setLastName = vi.fn();
+    const setEmail = vi.fn();
+    const setFavorite = vi.fn();
+    const setPreview = vi.fn();
+    const resetFile = { current: { value: "some value" } };
+
+    // const spyInstance = vi.spyOn(FormContact, );
+    // Simular el click en el botón
+    fireEvent.click(screen.getByText("SAVE"));
+
+    // Verificar que las funciones de estado fueron llamadas correctamente
+    expect(setName).toHaveBeenCalledWith("");
+    expect(setLastName).toHaveBeenCalledWith("");
+    expect(setEmail).toHaveBeenCalledWith("");
+    expect(setFavorite).toHaveBeenCalledWith(false);
+    expect(setPreview).toHaveBeenCalledWith("");
+    expect(resetFile.current.value).toBe("");
+  });
 });
