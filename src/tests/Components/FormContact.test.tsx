@@ -1,21 +1,26 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 import FormContact from "../../ui/FormContact";
 import { Provider } from "react-redux";
 import store from "../../redux/store";
-import ActionsProvider from "../../context/ActionsContext";
+import * as moduleName from "../../context/ActionsContext";
 
 describe("Form Contact Component", () => {
+  const useActionsMock = vi.spyOn(moduleName, "useActions");
+  const manageCreateContactsMock = vi.fn();
+
   beforeEach(() => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <Provider store={store}>{children}</Provider>
     );
 
-    render(
-      <ActionsProvider>
-        <FormContact />
-      </ActionsProvider>,
-      { wrapper }
-    );
+    useActionsMock.mockReturnValue({
+      manageCreateContact: manageCreateContactsMock,
+      manageDeleteContact: vi.fn(),
+      manageToggleLike: vi.fn(),
+    });
+
+    render(<FormContact />, { wrapper });
   });
 
   it("Should render all fields with their styles each one", () => {
@@ -28,26 +33,35 @@ describe("Form Contact Component", () => {
     expect(email).toBeInTheDocument();
   });
 
-  it("Should display a value that the users enter", () => {});
+  it("Should display a value that the users enter", () => {
+    const name = screen.getByPlaceholderText("Name") as HTMLInputElement;
+    const lastName = screen.getByPlaceholderText(
+      "Last name"
+    ) as HTMLInputElement;
+    const email = screen.getByPlaceholderText("Email") as HTMLInputElement;
 
-  it("Should reset the form", () => {
-    const setName = vi.fn();
-    const setLastName = vi.fn();
-    const setEmail = vi.fn();
-    const setFavorite = vi.fn();
-    const setPreview = vi.fn();
-    const resetFile = { current: { value: "some value" } };
+    name.value = "Ana";
+    lastName.value = "Perez";
+    email.value = "ana.perez@gmail.com";
 
-    // const spyInstance = vi.spyOn(FormContact, );
-    // Simular el click en el botón
-    fireEvent.click(screen.getByText("SAVE"));
+    expect(name).toHaveValue("Ana");
+    expect(lastName).toHaveValue("Perez");
+    expect(email).toHaveValue("ana.perez@gmail.com");
+  });
 
-    // Verificar que las funciones de estado fueron llamadas correctamente
-    expect(setName).toHaveBeenCalledWith("");
-    expect(setLastName).toHaveBeenCalledWith("");
-    expect(setEmail).toHaveBeenCalledWith("");
-    expect(setFavorite).toHaveBeenCalledWith(false);
-    expect(setPreview).toHaveBeenCalledWith("");
-    expect(resetFile.current.value).toBe("");
+  it("Should call at least once manageCreateContact", () => {
+    const buttonSubmit = screen.getByText("SAVE");
+    fireEvent.change(screen.getByPlaceholderText(/Name/), {
+      target: { value: "Ana" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/Last name/), {
+      target: { value: "Perez" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/Email/), {
+      target: { value: "Ana.perez@gmail.com" },
+    });
+
+    fireEvent.click(buttonSubmit);
+    expect(manageCreateContactsMock).toHaveBeenCalled();
   });
 });
