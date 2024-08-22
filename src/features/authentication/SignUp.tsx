@@ -9,7 +9,7 @@ function SignUp() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { singUp, error } = useSignUp();
+  const { singUp } = useSignUp();
 
   function handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -22,7 +22,6 @@ function SignUp() {
       email,
       password,
     });
-    console.log(error);
   }
 
   return (

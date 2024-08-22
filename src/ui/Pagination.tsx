@@ -42,7 +42,7 @@ function Pagination({ count }: { count?: number }) {
     setSearchParams(searchParams);
   }
 
-  if (currentPage > pageCount) previousPage();
+  if (currentPage > pageCount || pageCount > length) previousPage();
   if (pageCount <= 1) return;
 
   return (

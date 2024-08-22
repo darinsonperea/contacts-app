@@ -7,6 +7,7 @@ import { useCreate } from "../services/hooks/useCreate";
 import { useDelete } from "../services/hooks/useDelete";
 import { useToggleLike } from "../services/hooks/useToggleLike";
 import { AuthInfo } from "../redux/slices/authSlice";
+import { getGenderByName, randomInteger } from "../utils/helper";
 
 const ActionsContext = createContext<ActionsContextType | null>(null);
 
@@ -21,9 +22,24 @@ export default function ActionsProvider({
   const { setDeleteFetch } = useDelete();
   const { setToggle } = useToggleLike();
 
-  function manageCreateContact(newContact: ContactWithoutId) {
-    dispatch(add(newContact));
-    if (isAuthenticated) setContact(newContact);
+  async function manageCreateContact(newContact: ContactWithoutId) {
+    let gender;
+    let randomNumberPhoto;
+
+    if (!isAuthenticated) {
+      gender = await getGenderByName(newContact.name);
+      randomNumberPhoto = randomInteger(0, 78);
+    }
+
+    const image = `https://xsgames.co/randomusers/assets/avatars/${gender}/${randomNumberPhoto}.jpg`;
+
+    const contact = {
+      ...newContact,
+      avatar: newContact.avatar === "" ? image : newContact.avatar,
+    };
+
+    dispatch(add(contact));
+    if (isAuthenticated) setContact(contact);
     dispatch(toggleOpen());
   }
 

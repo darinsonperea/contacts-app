@@ -31,7 +31,6 @@ function FavoriteCards({ contacts: favorites }: CardsProps) {
                 color: colors["red-700"],
               }}
               onClick={() => manageToggleLike(contact.id, false)}
-              // disabled={isPending}
             >
               <HeartBroken />
             </button>

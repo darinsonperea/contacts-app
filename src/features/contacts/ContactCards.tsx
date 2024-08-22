@@ -21,7 +21,6 @@ function ContactCards({ flag, contacts }: CardsProps) {
                 : colors["green-light"],
             }}
             onClick={() => manageToggleLike(contact.id, !contact.favorite)}
-            // disabled={isDeleting}
           >
             {contact.favorite ? <HeartBroken /> : <Heart />}
           </button>
@@ -34,7 +33,6 @@ function ContactCards({ flag, contacts }: CardsProps) {
               onClick={() => {
                 manageDeleteContact(contact.id, contact.avatar);
               }}
-              // disabled={isDeleting}
             >
               <Trash />
             </button>

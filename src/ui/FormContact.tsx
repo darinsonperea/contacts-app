@@ -1,4 +1,3 @@
-import { getGenderByName, randomInteger } from "../utils/helper";
 import { useActions } from "../context/ActionsContext";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
@@ -128,7 +127,7 @@ function FormContact() {
     if (avatar) setPreview(URL.createObjectURL(avatar));
   }, [avatar]);
 
-  async function handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!name || !lastName || !email) {
@@ -138,10 +137,6 @@ function FormContact() {
         email: emailHasError,
       });
     }
-
-    const gender = await getGenderByName(name);
-    const randomNumberPhoto = randomInteger(0, 78);
-    const image = `https://xsgames.co/randomusers/assets/avatars/${gender}/${randomNumberPhoto}.jpg`;
 
     const newContact: ContactDataType = {
       id: crypto.randomUUID(),
@@ -154,7 +149,7 @@ function FormContact() {
           ? avatar
           : isAuthenticated && avatar === undefined
             ? "/img/default-user-pic.jpg"
-            : image,
+            : "",
     };
 
     manageCreateContact(newContact);
