@@ -30,7 +30,7 @@ function Login() {
       />
 
       <StyledInput
-        type="text"
+        type="password"
         placeholder="Password"
         className="p-3 rounded-full outline-none w-full bg-green-form placeholder:text-gray-700"
         onChange={(event) => setPassword(event.target.value)}

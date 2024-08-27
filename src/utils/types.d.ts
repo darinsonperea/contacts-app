@@ -20,14 +20,9 @@ export interface DefaultContact {
   favorite: boolean;
 }
 
-export interface ContactsTypes {
-  id: UUID;
-  name: string;
-  lastName: string;
-  email: string;
+export type ContactsTypes = Omit<ContactDataType, "avatar"> & {
   avatar: string;
-  favorite: boolean;
-}
+};
 
 export type InitialData = {
   contacts: ContactsTypes[];
@@ -75,7 +70,6 @@ export interface FetchTypes {
   method: Methods;
   body?: object;
   headers?: HeadersInit;
-  // actionFn?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
 }

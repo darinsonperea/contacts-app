@@ -28,27 +28,24 @@ function SignUp() {
     <StyledForm onSubmit={handleSubmit}>
       <StyledInput
         type="text"
-        id=""
         placeholder="Name"
         onChange={(event) => setName(event.target.value)}
       />
 
       <StyledInput
         type="text"
-        id=""
         placeholder="Last Name"
         onChange={(event) => setLastName(event.target.value)}
       />
 
       <StyledInput
         type="email"
-        id=""
         placeholder="Email"
         onChange={(event) => setEmail(event.target.value)}
       />
 
       <StyledInput
-        type="text"
+        type="password"
         placeholder="Password"
         onChange={(event) => setPassword(event.target.value)}
       />

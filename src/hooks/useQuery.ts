@@ -20,7 +20,6 @@ function useQuery<T>({ url, headers }: QueryTypes) {
       const newData: T = await response.json();
       setData(newData);
     } catch (error) {
-      console.log(error);
       setError("Something went wrong, try later");
     } finally {
       setIsLoading(false);

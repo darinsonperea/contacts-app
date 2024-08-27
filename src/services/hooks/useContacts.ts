@@ -13,15 +13,16 @@ export const useContacts = () => {
   const dispatch = useDispatch();
 
   const { data } = useQuery<ContactDataType[]>({
-    url: `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?userId=eq.${id}&select=*`,
+    url: id
+      ? `https://dwnavszoazxzffdtrhhm.supabase.co/rest/v1/contacts?userId=eq.${id}&select=*`
+      : "",
     headers: headersSupabase,
   });
 
   useEffect(() => {
-    async function getContacts() {
+    (async () => {
       if (isAuthenticated) return dispatch(initial(data));
       dispatch(initial(await defaultContacts()));
-    }
-    getContacts();
+    })();
   }, [dispatch, isAuthenticated, data]);
 };
